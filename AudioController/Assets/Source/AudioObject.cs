@@ -35,6 +35,14 @@ public class AudioObject : MonoBehaviour {
         _playingRoutine = StartCoroutine(PlayingRoutine());
     }
 
+    public void Stop()
+    {
+        if (_playingRoutine == null)
+            return;
+
+        _source.Stop();
+    }
+
     [ContextMenu("Test Play")]
     private void TestPlay()
     {
