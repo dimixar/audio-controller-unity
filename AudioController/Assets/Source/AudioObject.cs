@@ -15,7 +15,7 @@ public class AudioObject : MonoBehaviour {
 #endregion
 
 #region Public methods and properties
-    public string name {
+    public string clipName {
         get {
             return _clip != null ? _clip.name : "NONE";
         }

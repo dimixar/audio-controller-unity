@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEditor;
 
 [RequireComponent(typeof(ObjectPool))]
 public class AudioController : MonoBehaviour 
@@ -15,5 +16,14 @@ public class AudioController : MonoBehaviour
     void Awake()
     {
         _pool = GetComponent<ObjectPool>();
+    }
+
+    void OnEnable()
+    {
+        /*var asset = ScriptableObject.CreateInstance<AudioControllerData>();*/
+        //AssetDatabase.CreateAsset(asset, "ACDB");
+
+        //AssetDatabase.SaveAssets();
+        /*AssetDatabase.Refresh();*/
     }
 }
