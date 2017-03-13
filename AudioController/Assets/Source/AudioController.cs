@@ -2,7 +2,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(ObjectPool))]
 public class AudioController : MonoBehaviour 
 {
-    public List<AudioObject> _audioObjects;
+    private ObjectPool _pool;
+    
+    public void Play(string name)
+    {
+        //TODO: Add Implementation
+    }
+    
+    void Awake()
+    {
+        _pool = GetComponent<ObjectPool>();
+    }
 }
