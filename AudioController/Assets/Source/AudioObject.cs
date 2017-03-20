@@ -13,12 +13,20 @@ public class AudioObject : MonoBehaviour {
     private AudioSource _source;
 
     private Coroutine _playingRoutine;
+
+    private bool _isFree = true;
 #endregion
 
 #region Public methods and properties
     public string clipName {
         get {
             return _clip != null ? _clip.name : "NONE";
+        }
+    }
+
+    public bool isFree {
+        get {
+            return _isFree;
         }
     }
 
@@ -34,6 +42,7 @@ public class AudioObject : MonoBehaviour {
             _source = GetComponent<AudioSource>();
         _source.clip = _clip;
         _source.Play();
+        _isFree = false;
         _playingRoutine = StartCoroutine(PlayingRoutine());
     }
 
@@ -75,5 +84,6 @@ public class AudioObject : MonoBehaviour {
 
         _source.clip = null;
         _playingRoutine = null;
+        _isFree = true;
     }
 }
