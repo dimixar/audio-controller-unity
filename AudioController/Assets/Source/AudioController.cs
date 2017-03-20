@@ -6,6 +6,21 @@ using UnityEditor;
 [RequireComponent(typeof(ObjectPool))]
 public class AudioController : MonoBehaviour
 {
+    #region Serialized Data
+
+    [SerializeField]
+    private GameObject _defaultPrefab;
+
+    #endregion
+
+    #region Private fields
+
+    private ObjectPool _pool;
+
+    #endregion
+
+    #region Public methods and properties
+
     [HideInInspector]
     public string _dbName;
 
@@ -15,12 +30,22 @@ public class AudioController : MonoBehaviour
 
     public AudioControllerData _database;
 
-    private ObjectPool _pool;
+    public GameObject defaultPrefab
+    {
+        set
+        {
+            _defaultPrefab = value;
+        }
+    }
 
     public void Play(string name)
     {
         //TODO: Add Implementation
     }
+
+    #endregion
+
+    #region MonoBehaviour methods
 
     void Awake()
     {
@@ -30,4 +55,6 @@ public class AudioController : MonoBehaviour
     void OnEnable()
     {
     }
+
+    #endregion
 }

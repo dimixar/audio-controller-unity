@@ -4,18 +4,7 @@ using UnityEngine;
 
 public class ObjectPool : MonoBehaviour
 {
-    [SerializeField]
-    private GameObject _defaultPrefab;
-
     #region Public methods and properties
-
-    public GameObject defaultPrefab
-    {
-        set
-        {
-            _defaultPrefab = value;
-        }
-    }
 
     //TODO: Add possibility to differentiate between prefabs
     public AudioObject GetFreeAudioObject(GameObject prefab = null)
