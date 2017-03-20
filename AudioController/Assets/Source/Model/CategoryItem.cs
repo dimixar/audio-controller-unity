@@ -7,5 +7,6 @@ public struct CategoryItem
 {
     public string name;
     public SoundItem[] soundItems;
-    public GameObject audioObjectPrefab;
+    public GameObject audioObjectPrefab = null;
+    public bool usingDefaultPrefab = true;
 }
