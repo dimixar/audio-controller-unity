@@ -5,39 +5,30 @@ using UnityEngine;
 public class ObjectPool : MonoBehaviour
 {
     [SerializeField]
-    private GameObject _prefab;
+    private GameObject _defaultPrefab;
 
-    private Stack<GameObject> _pool;
+    #region Public methods and properties
 
-    public GameObject prefab
+    public GameObject defaultPrefab
     {
-        set {
-            _prefab = value;
+        set
+        {
+            _defaultPrefab = value;
         }
     }
 
     //TODO: Add possibility to differentiate between prefabs
-    public GameObject GetGameObject()
+    public AudioObject GetFreeAudioObject(GameObject prefab = null)
     {
-        if (_pool != null)
-        {
-            if (_pool.Count > 0)
-                return _pool.Pop();
-            else
-                return GameObject.Instantiate<GameObject>(_prefab);
-        }
-        else
-        {
-            _pool = new Stack<GameObject>();
-            return GameObject.Instantiate<GameObject>(_prefab);
-        }
+        return null;
     }
 
-    public void Put(GameObject obj)
-    {
-        if (_pool == null)
-            _pool = new Stack<GameObject>();
+    #endregion
+}
 
-        _pool.Push(obj);
-    }
+[System.Serializable]
+public class PrefabBasedPool
+{
+    public GameObject prefab;
+    public List<AudioObject> audioObjects;
 }
