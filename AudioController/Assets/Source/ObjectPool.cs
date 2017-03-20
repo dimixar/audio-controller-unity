@@ -9,6 +9,14 @@ public class ObjectPool : MonoBehaviour
 
     private Stack<GameObject> _pool;
 
+    public GameObject prefab
+    {
+        set {
+            _prefab = value;
+        }
+    }
+
+    //TODO: Add possibility to differentiate between prefabs
     public GameObject GetGameObject()
     {
         if (_pool != null)
@@ -29,7 +37,7 @@ public class ObjectPool : MonoBehaviour
     {
         if (_pool == null)
             _pool = new Stack<GameObject>();
-        
+
         _pool.Push(obj);
     }
 }
