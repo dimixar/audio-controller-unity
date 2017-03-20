@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(AudioSource))]
 public class AudioObject : MonoBehaviour {
 
     public System.Action<AudioObject> OnFinishedPlaying;
-    
+
 #region private fields
     private string _id;
     private AudioClip _clip;
@@ -27,9 +28,10 @@ public class AudioObject : MonoBehaviour {
         _clip = clip;
     }
 
-    public void Play(AudioSource source)
+    public void Play()
     {
-        _source = source;
+        if (_source == null)
+            _source = GetComponent<AudioSource>();
         _source.clip = _clip;
         _source.Play();
         _playingRoutine = StartCoroutine(PlayingRoutine());
@@ -46,7 +48,7 @@ public class AudioObject : MonoBehaviour {
     [ContextMenu("Test Play")]
     private void TestPlay()
     {
-        Play(_source);
+        Play();
     }
 #endregion
 
@@ -72,7 +74,6 @@ public class AudioObject : MonoBehaviour {
         }
 
         _source.clip = null;
-        _source = null;
         _playingRoutine = null;
     }
 }
