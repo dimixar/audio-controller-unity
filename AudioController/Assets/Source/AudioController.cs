@@ -40,9 +40,15 @@ public class AudioController : MonoBehaviour
 
     public void Play(string name)
     {
-        //TODO: Add Implementation
+        PlayImpl(name);
     }
 
+    #endregion
+
+    #region Private methods
+    private void PlayImpl(string name) {
+        //TODO: Add Implementation
+    }
     #endregion
 
     #region MonoBehaviour methods
