@@ -17,7 +17,7 @@ public class AudioControllerEditor : UnityEditor.Editor
         _ac._dbPath = EditorGUILayout.TextField("DB Path", _ac._dbPath);
         _ac._dbName = EditorGUILayout.TextField("DB Name", _ac._dbName);
 
-        string path = "Assets/" + _ac._dbPath + "/" + _ac._dbName + ".asset";
+        string path = "Assets/" + (string.IsNullOrEmpty(_ac._dbPath) ? "" : (_ac._dbPath + "/")) + _ac._dbName + ".asset";
 
         if (_ac._database == null)
         {
