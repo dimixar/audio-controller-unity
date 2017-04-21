@@ -225,10 +225,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f8b26984abd74719b7102aed2448f82, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _defaultPrefab: {fileID: 0}
+  _defaultPrefab: {fileID: 1372326452742372, guid: d91a4843d0a82bb4c98640f14561ef59,
+    type: 2}
   _dbName: ACDB
   _dbPath: 
-  _database: {fileID: 0}
+  _database: {fileID: 11400000, guid: 18ff59c790da81347b3bffb296708f6d, type: 2}
 --- !u!114 &104581350
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -240,6 +241,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 752da49827f134e25aa204a9cb0de6c6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  pools: []
 --- !u!4 &104581351
 Transform:
   m_ObjectHideFlags: 0
