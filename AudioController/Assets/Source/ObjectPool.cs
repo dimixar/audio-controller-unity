@@ -9,12 +9,24 @@ public class ObjectPool : MonoBehaviour
     #endregion
     #region Public methods and properties
 
-    public AudioObject GetFreeAudioObject(GameObject prefab = null)
+    public GameObject GetFreeObject(GameObject prefab = null)
     {
         if (prefab == null)
             return null;
 
-        return null;
+        PrefabBasedPool pool = pools.Find((x) => {
+            return x.prefab == prefab;
+        });
+
+        if (pool != null)
+            return pool.GetFreeObject();
+
+        pool = new PrefabBasedPool(prefab);
+        GameObject parent = new GameObject();
+        parent.transform.parent = this.gameObject.transform;
+        pool.parent = parent.transform;
+        pools.Add(pool);
+        return pool.GetFreeObject();
     }
 
     #endregion
@@ -56,7 +68,7 @@ public class PrefabBasedPool
         if (freeObj != null)
             return freeObj;
 
-        var obj = GameObject.Instantiate(prefab, parent);
+        var obj = GameObject.Instantiate(prefab, Vector3.zero, Quaternion.identity, parent);
         pool.Add(obj);
 
         return obj;
