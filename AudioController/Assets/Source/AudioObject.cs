@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(AudioSource))]
-public class AudioObject : MonoBehaviour {
+public class AudioObject : MonoBehaviour
+{
 
     public System.Action<AudioObject> OnFinishedPlaying;
 
-#region private fields
+    #region private fields
     private string _id;
     private AudioClip _clip;
     private AudioSource _source;
@@ -15,17 +16,21 @@ public class AudioObject : MonoBehaviour {
     private Coroutine _playingRoutine;
 
     private bool _isFree = true;
-#endregion
+    #endregion
 
-#region Public methods and properties
-    public string clipName {
-        get {
+    #region Public methods and properties
+    public string clipName
+    {
+        get
+        {
             return _clip != null ? _clip.name : "NONE";
         }
     }
 
-    public bool isFree {
-        get {
+    public bool isFree
+    {
+        get
+        {
             return _isFree;
         }
     }
@@ -59,12 +64,12 @@ public class AudioObject : MonoBehaviour {
     {
         Play();
     }
-#endregion
+    #endregion
 
     private IEnumerator PlayingRoutine()
     {
         Debug.Log("Playing Started");
-        while(true)
+        while (true)
         {
             Debug.Log("Checking if it's playing.");
             yield return new WaitForSeconds(0.05f);
