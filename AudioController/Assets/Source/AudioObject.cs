@@ -1,9 +1,10 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(AudioSource))]
-public class AudioObject : MonoBehaviour
+public class AudioObject : MonoBehaviour, IPoolable
 {
 
     public System.Action<AudioObject> OnFinishedPlaying;
@@ -24,14 +25,6 @@ public class AudioObject : MonoBehaviour
         get
         {
             return _clip != null ? _clip.name : "NONE";
-        }
-    }
-
-    public bool isFree
-    {
-        get
-        {
-            return _isFree;
         }
     }
 
@@ -91,4 +84,11 @@ public class AudioObject : MonoBehaviour
         _playingRoutine = null;
         _isFree = true;
     }
+
+    #region IPoolable methods
+    public bool IsFree()
+    {
+        return _isFree;
+    }
+    #endregion
 }
