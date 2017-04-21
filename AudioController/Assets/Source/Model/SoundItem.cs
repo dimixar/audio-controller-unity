@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 [System.Serializable]
-public struct SoundItem
+public class SoundItem
 {
     public string name;
     public AudioClip clip;

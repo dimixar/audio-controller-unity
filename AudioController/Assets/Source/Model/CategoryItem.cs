@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
-public struct CategoryItem
+public class CategoryItem
 {
     public string name;
     public SoundItem[] soundItems;
     public GameObject audioObjectPrefab;
-    public bool usingDefaultPrefab;
+    public bool usingDefaultPrefab = true;
 }
