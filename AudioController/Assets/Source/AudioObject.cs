@@ -61,19 +61,14 @@ public class AudioObject : MonoBehaviour, IPoolable
 
     private IEnumerator PlayingRoutine()
     {
-        Debug.Log("Playing Started");
         while (true)
         {
-            Debug.Log("Checking if it's playing.");
             yield return new WaitForSeconds(0.05f);
             if (!_source.isPlaying)
             {
-                Debug.Log("AudioSource Finished Playing");
                 break;
             }
         }
-
-        Debug.Log("Not playing anymore");
 
         if (OnFinishedPlaying != null)
         {
