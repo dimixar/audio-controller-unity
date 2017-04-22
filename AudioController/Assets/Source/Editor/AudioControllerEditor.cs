@@ -13,10 +13,11 @@ namespace OSAC.Editor
 
         public override void OnInspectorGUI()
         {
-            base.OnInspectorGUI();
+            // base.OnInspectorGUI();
 
             _ac = target as AudioController;
 
+            _ac._defaultPrefab = (GameObject)EditorGUILayout.ObjectField("Default AudioObject prefab", (Object)(_ac._defaultPrefab), typeof(GameObject), true);
             _ac._dbPath = EditorGUILayout.TextField("DB Path", _ac._dbPath);
             _ac._dbName = EditorGUILayout.TextField("DB Name", _ac._dbName);
 
@@ -41,10 +42,15 @@ namespace OSAC.Editor
                 else
                 {
                     _ac._database = db;
+                    DrawMain();
                 }
             }
 
             EditorUtility.SetDirty(this);
+        }
+
+        private void DrawMain()
+        {
         }
     }
 }

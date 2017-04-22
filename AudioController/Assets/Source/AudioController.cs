@@ -10,9 +10,7 @@ namespace OSAC
     public class AudioController : MonoBehaviour
     {
         #region Serialized Data
-
-        [SerializeField]
-        private GameObject _defaultPrefab;
+        public GameObject _defaultPrefab;
 
         #endregion
 
