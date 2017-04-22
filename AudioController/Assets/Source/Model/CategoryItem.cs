@@ -11,7 +11,9 @@ namespace OSAC.Model
         public SoundItem[] soundItems;
         public GameObject audioObjectPrefab;
         public bool usingDefaultPrefab = true;
-        public float volume;
+
+        [Range(0f, 1f)]
+        public float categoryVolume;
     }
 
 }
