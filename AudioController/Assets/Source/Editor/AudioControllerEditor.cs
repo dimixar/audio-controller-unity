@@ -2,45 +2,49 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using OSAC.Model;
 
-[CustomEditor(typeof(AudioController))]
-public class AudioControllerEditor : UnityEditor.Editor
+namespace OSAC.Editor
 {
-    private AudioController _ac;
-
-    public override void OnInspectorGUI()
+    [CustomEditor(typeof(AudioController))]
+    public class AudioControllerEditor : UnityEditor.Editor
     {
-        base.OnInspectorGUI();
+        private AudioController _ac;
 
-        _ac = target as AudioController;
-
-        _ac._dbPath = EditorGUILayout.TextField("DB Path", _ac._dbPath);
-        _ac._dbName = EditorGUILayout.TextField("DB Name", _ac._dbName);
-
-        string path = "Assets/" + (string.IsNullOrEmpty(_ac._dbPath) ? "" : (_ac._dbPath + "/")) + _ac._dbName + ".asset";
-
-        if (_ac._database == null)
+        public override void OnInspectorGUI()
         {
-            AudioControllerData db = AssetDatabase.LoadAssetAtPath<AudioControllerData>(path);
-            if (db == null)
+            base.OnInspectorGUI();
+
+            _ac = target as AudioController;
+
+            _ac._dbPath = EditorGUILayout.TextField("DB Path", _ac._dbPath);
+            _ac._dbName = EditorGUILayout.TextField("DB Name", _ac._dbName);
+
+            string path = "Assets/" + (string.IsNullOrEmpty(_ac._dbPath) ? "" : (_ac._dbPath + "/")) + _ac._dbName + ".asset";
+
+            if (_ac._database == null)
             {
-                if (GUILayout.Button("Create Database"))
+                AudioControllerData db = AssetDatabase.LoadAssetAtPath<AudioControllerData>(path);
+                if (db == null)
                 {
-                    var asset = ScriptableObject.CreateInstance<AudioControllerData>();
-                    AssetDatabase.CreateAsset(asset, path);
+                    if (GUILayout.Button("Create Database"))
+                    {
+                        var asset = ScriptableObject.CreateInstance<AudioControllerData>();
+                        AssetDatabase.CreateAsset(asset, path);
 
-                    AssetDatabase.SaveAssets();
-                    AssetDatabase.Refresh();
+                        AssetDatabase.SaveAssets();
+                        AssetDatabase.Refresh();
 
-                    _ac._database = asset;
+                        _ac._database = asset;
+                    }
+                }
+                else
+                {
+                    _ac._database = db;
                 }
             }
-            else
-            {
-                _ac._database = db;
-            }
-        }
 
-        EditorUtility.SetDirty(this);
+            EditorUtility.SetDirty(this);
+        }
     }
 }

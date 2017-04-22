@@ -2,15 +2,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AudioControllerData : ScriptableObject
+namespace OSAC.Model
 {
-    public CategoryItem[] items;
-
-    public CategoryItem getCategoryItem(string name)
+    public class AudioControllerData : ScriptableObject
     {
-        return System.Array.Find(items, (x) =>
+        public CategoryItem[] items;
+
+        public CategoryItem getCategoryItem(string name)
         {
-            return x.name == name;
-        });
+            return System.Array.Find(items, (x) =>
+            {
+                return x.name == name;
+            });
+        }
     }
 }
