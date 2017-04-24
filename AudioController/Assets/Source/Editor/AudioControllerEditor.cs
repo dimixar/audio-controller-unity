@@ -9,6 +9,7 @@ namespace OSAC.Editor
     [CustomEditor(typeof(AudioController))]
     public class AudioControllerEditor : UnityEditor.Editor
     {
+        private const int NAME_ABV_LEN = 50;
         private AudioController _ac;
         private string categoryNameSearch = "";
 
@@ -121,7 +122,8 @@ namespace OSAC.Editor
                     {
                         item.soundItems = new Model.SoundItem[0];
                     }
-            if (GUILayout.Button("Delete " + item.name))
+            string nameAbv = item.name.Length > NAME_ABV_LEN ? item.name.Substring(0, NAME_ABV_LEN) : item.name;
+            if (GUILayout.Button("Delete " + nameAbv))
             {
                 DeleteCategory(index);
             }
@@ -170,7 +172,8 @@ namespace OSAC.Editor
             item.name = EditorGUILayout.TextField("Name", item.name);
             item.clip = (AudioClip)EditorGUILayout.ObjectField("Audio Clip", item.clip, typeof(AudioClip), false);
             item.volume = EditorGUILayout.Slider("Volume", item.volume, 0f, 1f);
-            if (GUILayout.Button("Delete " + item.name))
+            string nameAbv = item.name.Length > NAME_ABV_LEN? item.name.Substring(0, NAME_ABV_LEN) : item.name;
+            if (GUILayout.Button("Delete " + nameAbv))
             {
                 DeleteSoundItem(index, items);
             }
