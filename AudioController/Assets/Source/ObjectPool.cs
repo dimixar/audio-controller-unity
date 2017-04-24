@@ -61,6 +61,11 @@ public class PrefabBasedPool
     public GameObject GetFreeObject()
     {
         GameObject freeObj = pool.Find((x) => {
+            if (x == null)
+            {
+                pool.Remove(x);
+                return false;
+            }
             var poolable = x.GetComponent<IPoolable>();
             return poolable.IsFree();
         });
