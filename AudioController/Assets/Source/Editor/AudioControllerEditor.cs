@@ -112,7 +112,12 @@ namespace OSAC.Editor
                 item.soundItems = soundItems;
             }
             item.foldOutSoundItems = DrawSoundItems(item.soundItems, item.foldOutSoundItems);
-            if (GUILayout.Button("Delete Category"))
+            if (item.soundItems.Length != 0)
+                if (GUILayout.Button("DELETE ALL SOUNDS"))
+                {
+                    item.soundItems = new Model.SoundItem[0];
+                }
+            if (GUILayout.Button("Delete " + item.name))
             {
                 DeleteCategory(index);
             }
@@ -145,20 +150,42 @@ namespace OSAC.Editor
             {
                 for (int j = items.Length - 1; j >= 0; j--)
                 {
-                    DrawSoundItem(items[j]);
+                    DrawSoundItem(items[j], j, items);
                 }
             }
             EditorGUI.indentLevel--;
             return foldOut;
         }
 
-        private void DrawSoundItem(Model.SoundItem item)
+        private void DrawSoundItem(Model.SoundItem item, int index, Model.SoundItem[] items)
         {
             EditorGUILayout.BeginVertical(EditorStyles.helpBox);
             item.name = EditorGUILayout.TextField("Name", item.name);
             item.clip = (AudioClip)EditorGUILayout.ObjectField("Audio Clip", item.clip, typeof(AudioClip), false);
             item.volume = EditorGUILayout.Slider("Volume", item.volume, 0f, 1f);
+            if (GUILayout.Button("Delete " + item.name))
+            {
+                DeleteSoundItem(index, items);
+            }
             EditorGUILayout.EndVertical();
+        }
+
+        private void DeleteSoundItem(int index, Model.SoundItem[] items)
+        {
+            var category = System.Array.Find(_ac._database.items, (x) => {
+                return x.soundItems == items;
+            });
+
+            var soundItems = new Model.SoundItem[category.soundItems.Length - 1];
+            int soundInd = 0;
+            for (int i = 0; i < category.soundItems.Length; i++)
+            {
+                if (i == index)
+                    continue;
+                soundItems[soundInd] = category.soundItems[i];
+                soundInd += 1;
+            }
+            category.soundItems = soundItems;
         }
     }
 }
