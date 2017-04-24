@@ -96,24 +96,44 @@ namespace OSAC.Editor
             item.audioObjectPrefab = (GameObject)EditorGUILayout.ObjectField("Category AO prefab", item.audioObjectPrefab, typeof(GameObject), false);
             item.usingDefaultPrefab = item.audioObjectPrefab == null;
             item.categoryVolume = EditorGUILayout.Slider("Category Volume", item.categoryVolume, 0f, 1f);
-            EditorGUI.indentLevel++;
-            // EditorGUILayout.Foldout();
-            item.foldOutSoundItems = EditorGUILayout.Foldout(item.foldOutSoundItems, "SOUND ITEMS", true);
-            if (item.foldOutSoundItems)
+            if (GUILayout.Button("ADD SOUND ITEM"))
             {
-                for (int j = 0; j < item.soundItems.Length; j++)
+                var soundItem = new Model.SoundItem();
+                bool isNoSoundItems = item.soundItems == null;
+                var soundItems = new Model.SoundItem[!isNoSoundItems ? item.soundItems.Length + 1 : 1];
+                if (!isNoSoundItems)
+                    item.soundItems.CopyTo(soundItems, 0);
+                soundItems[soundItems.Length - 1] = soundItem;
+                item.soundItems = soundItems;
+            }
+            item.foldOutSoundItems = DrawSoundItems(item.soundItems, item.foldOutSoundItems);
+            EditorGUILayout.EndVertical();
+        }
+
+        private bool DrawSoundItems(Model.SoundItem[] items, bool foldOut)
+        {
+            if (items == null || items.Length == 0)
+                return foldOut;
+
+            EditorGUI.indentLevel++;
+            foldOut = EditorGUILayout.Foldout(foldOut, "SOUND ITEMS", true);
+            if (foldOut)
+            {
+                for (int j = items.Length - 1; j >= 0; j--)
                 {
-                    DrawSoundItem(item.soundItems[j]);
+                    DrawSoundItem(items[j]);
                 }
             }
             EditorGUI.indentLevel--;
-            EditorGUILayout.EndVertical();
+            return foldOut;
         }
 
         private void DrawSoundItem(Model.SoundItem item)
         {
             EditorGUILayout.BeginVertical(EditorStyles.helpBox);
-            EditorGUILayout.LabelField("Name", item.name);
+            item.name = EditorGUILayout.TextField("Name", item.name);
+            item.clip = (AudioClip)EditorGUILayout.ObjectField("Audio Clip", item.clip, typeof(AudioClip), false);
+            item.volume = EditorGUILayout.Slider("Volume", item.volume, 0f, 1f);
             EditorGUILayout.EndVertical();
         }
     }
