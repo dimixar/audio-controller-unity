@@ -10,6 +10,7 @@ namespace OSAC.Editor
     public class AudioControllerEditor : UnityEditor.Editor
     {
         private AudioController _ac;
+        private string categoryNameSearch = "";
 
         public override void OnInspectorGUI()
         {
@@ -79,17 +80,21 @@ namespace OSAC.Editor
             if (db.items.Length == 0)
                 return;
 
+            categoryNameSearch = EditorGUILayout.TextField("Search Category", categoryNameSearch);
             db.foldOutCategories = EditorGUILayout.Foldout(db.foldOutCategories, "CATEGORIES", true);
             if (!db.foldOutCategories)
                 return;
 
             for (int i = db.items.Length - 1; i >= 0; i--)
             {
-                DrawCategory(db.items[i]);
+                if (!string.IsNullOrEmpty(db.items[i].name))
+                    if (db.items[i].name.ToLower().Contains(categoryNameSearch.ToLower()) == false && string.IsNullOrEmpty(categoryNameSearch) == false)
+                        continue;
+                DrawCategory(db.items[i], i);
             }
         }
 
-        private void DrawCategory(Model.CategoryItem item)
+        private void DrawCategory(Model.CategoryItem item, int index)
         {
             EditorGUILayout.BeginVertical(EditorStyles.helpBox);
             item.name = EditorGUILayout.TextField("Name", item.name);
@@ -107,7 +112,26 @@ namespace OSAC.Editor
                 item.soundItems = soundItems;
             }
             item.foldOutSoundItems = DrawSoundItems(item.soundItems, item.foldOutSoundItems);
+            if (GUILayout.Button("Delete Category"))
+            {
+                DeleteCategory(index);
+            }
             EditorGUILayout.EndVertical();
+        }
+
+        private void DeleteCategory(int index)
+        {
+            var categories = new Model.CategoryItem[_ac._database.items.Length - 1];
+            int catInd = 0;
+            for (int i = 0; i < _ac._database.items.Length; i++)
+            {
+                if (i == index)
+                    continue;
+
+                categories[catInd] = _ac._database.items[i];
+                catInd += 1;
+            }
+            _ac._database.items = categories;
         }
 
         private bool DrawSoundItems(Model.SoundItem[] items, bool foldOut)
