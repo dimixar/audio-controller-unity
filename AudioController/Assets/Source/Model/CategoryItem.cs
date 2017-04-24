@@ -13,7 +13,7 @@ namespace OSAC.Model
         public bool usingDefaultPrefab = true;
 
         [Range(0f, 1f)]
-        public float categoryVolume;
+        public float categoryVolume = 1f;
 
         public bool foldOutSoundItems = false;
         public string soundsSearchName = "";

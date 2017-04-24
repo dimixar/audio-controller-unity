@@ -9,7 +9,7 @@ namespace OSAC.Model
         public AudioClip clip;
 
         [RangeAttribute(0f, 1f)]
-        public float volume;
+        public float volume = 1f;
     }
 
 }
