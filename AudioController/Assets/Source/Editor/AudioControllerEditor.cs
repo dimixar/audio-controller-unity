@@ -17,7 +17,7 @@ namespace OSAC.Editor
 
             _ac = target as AudioController;
 
-            _ac._defaultPrefab = (GameObject)EditorGUILayout.ObjectField("Default AudioObject prefab", (Object)(_ac._defaultPrefab), typeof(GameObject), true);
+            _ac._defaultPrefab = (GameObject)EditorGUILayout.ObjectField("Default AudioObject prefab", (Object)(_ac._defaultPrefab), typeof(GameObject), false);
             _ac._dbPath = EditorGUILayout.TextField("DB Path", _ac._dbPath);
             _ac._dbName = EditorGUILayout.TextField("DB Name", _ac._dbName);
 
@@ -42,8 +42,11 @@ namespace OSAC.Editor
                 else
                 {
                     _ac._database = db;
-                    DrawMain();
                 }
+            }
+            else
+            {
+                DrawMain();
             }
 
             EditorUtility.SetDirty(this);
@@ -51,6 +54,43 @@ namespace OSAC.Editor
 
         private void DrawMain()
         {
+            DrawCategories(_ac._database);
+        }
+
+        private void DrawCategories(Model.AudioControllerData db)
+        {
+            for (int i = 0; i < db.items.Length; i++)
+            {
+                DrawCategory(db.items[i]);
+            }
+        }
+
+        private void DrawCategory(Model.CategoryItem item)
+        {
+            EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+            EditorGUILayout.LabelField("Cateory Name", item.name);
+            item.audioObjectPrefab = (GameObject)EditorGUILayout.ObjectField("Category AO prefab", item.audioObjectPrefab, typeof(GameObject), false);
+            item.usingDefaultPrefab = item.audioObjectPrefab == null;
+            item.categoryVolume = EditorGUILayout.Slider("Category Volume", item.categoryVolume, 0f, 1f);
+            EditorGUI.indentLevel++;
+            EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+            // EditorGUILayout.Foldout();
+            item.foldOutSoundItems = EditorGUILayout.Foldout(item.foldOutSoundItems, "Sound Items", true);
+            if (item.foldOutSoundItems)
+            {
+                for (int j = 0; j < item.soundItems.Length; j++)
+                {
+                    DrawSoundItem(item.soundItems[j]);
+                }
+            }
+            EditorGUILayout.EndVertical();
+            EditorGUI.indentLevel--;
+            EditorGUILayout.EndVertical();
+        }
+
+        private void DrawSoundItem(Model.SoundItem item)
+        {
+            EditorGUILayout.LabelField(item.name);
         }
     }
 }

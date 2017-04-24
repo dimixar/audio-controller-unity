@@ -14,6 +14,8 @@ namespace OSAC.Model
 
         [Range(0f, 1f)]
         public float categoryVolume;
+
+        public bool foldOutSoundItems = false;
     }
 
 }
