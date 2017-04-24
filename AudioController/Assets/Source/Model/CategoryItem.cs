@@ -16,6 +16,7 @@ namespace OSAC.Model
         public float categoryVolume;
 
         public bool foldOutSoundItems = false;
+        public string soundsSearchName = "";
     }
 
 }

@@ -111,7 +111,9 @@ namespace OSAC.Editor
                 soundItems[soundItems.Length - 1] = soundItem;
                 item.soundItems = soundItems;
             }
-            item.foldOutSoundItems = DrawSoundItems(item.soundItems, item.foldOutSoundItems);
+            if (item.soundItems.Length != 0)
+                item.soundsSearchName = EditorGUILayout.TextField("Search sound item", item.soundsSearchName);
+            item.foldOutSoundItems = DrawSoundItems(item.soundItems, item.foldOutSoundItems, item.soundsSearchName);
             if (item.soundItems.Length != 0)
                 if (GUILayout.Button("DELETE ALL SOUNDS"))
                 {
@@ -139,7 +141,7 @@ namespace OSAC.Editor
             _ac._database.items = categories;
         }
 
-        private bool DrawSoundItems(Model.SoundItem[] items, bool foldOut)
+        private bool DrawSoundItems(Model.SoundItem[] items, bool foldOut, string searchName)
         {
             if (items == null || items.Length == 0)
                 return foldOut;
@@ -150,6 +152,9 @@ namespace OSAC.Editor
             {
                 for (int j = items.Length - 1; j >= 0; j--)
                 {
+                    if (!string.IsNullOrEmpty(items[j].name))
+                        if (items[j].name.ToLower().Contains(searchName.ToLower()) == false && string.IsNullOrEmpty(searchName) == false)
+                            continue;
                     DrawSoundItem(items[j], j, items);
                 }
             }
