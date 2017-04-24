@@ -111,14 +111,16 @@ namespace OSAC.Editor
                 soundItems[soundItems.Length - 1] = soundItem;
                 item.soundItems = soundItems;
             }
-            if (item.soundItems.Length != 0)
-                item.soundsSearchName = EditorGUILayout.TextField("Search sound item", item.soundsSearchName);
+            if (item.soundItems != null)
+                if (item.soundItems.Length != 0)
+                    item.soundsSearchName = EditorGUILayout.TextField("Search sound item", item.soundsSearchName);
             item.foldOutSoundItems = DrawSoundItems(item.soundItems, item.foldOutSoundItems, item.soundsSearchName);
-            if (item.soundItems.Length != 0)
-                if (GUILayout.Button("DELETE ALL SOUNDS"))
-                {
-                    item.soundItems = new Model.SoundItem[0];
-                }
+            if (item.soundItems != null)
+                if (item.soundItems.Length != 0)
+                    if (GUILayout.Button("DELETE ALL SOUNDS"))
+                    {
+                        item.soundItems = new Model.SoundItem[0];
+                    }
             if (GUILayout.Button("Delete " + item.name))
             {
                 DeleteCategory(index);
