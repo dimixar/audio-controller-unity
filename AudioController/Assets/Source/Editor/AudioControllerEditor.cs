@@ -56,16 +56,13 @@ namespace OSAC.Editor
 
         private void DrawMain()
         {
+            EditorGUILayout.BeginHorizontal(EditorStyles.helpBox);
             if (GUILayout.Button("DELETE DATA"))
             {
                 AssetDatabase.DeleteAsset("Assets/" + (string.IsNullOrEmpty(_ac._dbPath) ? "" : (_ac._dbPath + "/")) + _ac._dbName + ".asset");
                 return;
             }
-            DrawCategories(_ac._database);
-        }
-
-        private void DrawCategories(Model.AudioControllerData db)
-        {
+            var db = _ac._database;
             if (GUILayout.Button("ADD CATEGORY"))
             {
                 var category = new Model.CategoryItem();
@@ -75,6 +72,12 @@ namespace OSAC.Editor
                 categories[categories.Length - 1] = category;
                 db.items = categories;
             }
+            EditorGUILayout.EndHorizontal();
+            DrawCategories(db);
+        }
+
+        private void DrawCategories(Model.AudioControllerData db)
+        {
 
             if (db.items == null)
                 return;
@@ -98,10 +101,13 @@ namespace OSAC.Editor
         private void DrawCategory(Model.CategoryItem item, int index)
         {
             EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+
             item.name = EditorGUILayout.TextField("Name", item.name);
             item.audioObjectPrefab = (GameObject)EditorGUILayout.ObjectField("Category AO prefab", item.audioObjectPrefab, typeof(GameObject), false);
             item.usingDefaultPrefab = item.audioObjectPrefab == null;
             item.categoryVolume = EditorGUILayout.Slider("Category Volume", item.categoryVolume, 0f, 1f);
+
+            EditorGUILayout.BeginHorizontal(EditorStyles.helpBox);
             if (GUILayout.Button("ADD SOUND ITEM"))
             {
                 var soundItem = new Model.SoundItem();
@@ -112,16 +118,6 @@ namespace OSAC.Editor
                 soundItems[soundItems.Length - 1] = soundItem;
                 item.soundItems = soundItems;
             }
-            if (item.soundItems != null)
-                if (item.soundItems.Length != 0)
-                    item.soundsSearchName = EditorGUILayout.TextField("Search sound item", item.soundsSearchName);
-            item.foldOutSoundItems = DrawSoundItems(item.soundItems, item.foldOutSoundItems, item.soundsSearchName);
-            if (item.soundItems != null)
-                if (item.soundItems.Length != 0)
-                    if (GUILayout.Button("DELETE ALL SOUNDS"))
-                    {
-                        item.soundItems = new Model.SoundItem[0];
-                    }
             string nameAbv = "";
             if (string.IsNullOrEmpty(item.name) == false)
                 nameAbv = item.name.Length > NAME_ABV_LEN ? item.name.Substring(0, NAME_ABV_LEN) : item.name;
@@ -129,6 +125,14 @@ namespace OSAC.Editor
             {
                 DeleteCategory(index);
             }
+            EditorGUILayout.EndHorizontal();
+
+            if (item.soundItems != null)
+                if (item.soundItems.Length != 0)
+                    item.soundsSearchName = EditorGUILayout.TextField("Search sound item", item.soundsSearchName);
+
+            item.foldOutSoundItems = DrawSoundItems(item, item.foldOutSoundItems, item.soundsSearchName);
+
             EditorGUILayout.EndVertical();
         }
 
@@ -147,13 +151,28 @@ namespace OSAC.Editor
             _ac._database.items = categories;
         }
 
-        private bool DrawSoundItems(Model.SoundItem[] items, bool foldOut, string searchName)
+        private bool DrawSoundItems(Model.CategoryItem item, bool foldOut, string searchName)
         {
+            Model.SoundItem[] items = item.soundItems;
             if (items == null || items.Length == 0)
                 return foldOut;
 
             EditorGUI.indentLevel++;
+
+            EditorGUILayout.BeginHorizontal();
             foldOut = EditorGUILayout.Foldout(foldOut, "SOUND ITEMS", true);
+            if (items != null)
+            {
+                if (items.Length != 0)
+                    if (GUILayout.Button("DELETE ALL SOUNDS"))
+                    {
+                        items = new Model.SoundItem[0];
+                        item.soundItems = items;
+                        return foldOut;
+                    }
+            }
+            EditorGUILayout.EndHorizontal();
+
             if (foldOut)
             {
                 for (int j = items.Length - 1; j >= 0; j--)
