@@ -7,6 +7,7 @@ namespace OSAC.Model
     public class AudioControllerData : ScriptableObject
     {
         public CategoryItem[] items;
+        public bool foldOutCategories = false;
 
         public CategoryItem getCategoryItem(string name)
         {

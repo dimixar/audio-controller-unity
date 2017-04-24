@@ -54,12 +54,33 @@ namespace OSAC.Editor
 
         private void DrawMain()
         {
+            if (GUILayout.Button("DELETE DATA"))
+            {
+                AssetDatabase.DeleteAsset("Assets/" + (string.IsNullOrEmpty(_ac._dbPath) ? "" : (_ac._dbPath + "/")) + _ac._dbName + ".asset");
+                return;
+            }
             DrawCategories(_ac._database);
         }
 
         private void DrawCategories(Model.AudioControllerData db)
         {
-            for (int i = 0; i < db.items.Length; i++)
+            if (GUILayout.Button("ADD CATEGORY"))
+            {
+                var category = new Model.CategoryItem();
+                var categories = new Model.CategoryItem[db.items.Length + 1];
+                db.items.CopyTo(categories, 0);
+                categories[categories.Length - 1] = category;
+                db.items = categories;
+            }
+
+            if (db.items.Length == 0)
+                return;
+
+            db.foldOutCategories = EditorGUILayout.Foldout(db.foldOutCategories, "CATEGORIES", true);
+            if (!db.foldOutCategories)
+                return;
+
+            for (int i = db.items.Length - 1; i >= 0; i--)
             {
                 DrawCategory(db.items[i]);
             }
@@ -68,14 +89,13 @@ namespace OSAC.Editor
         private void DrawCategory(Model.CategoryItem item)
         {
             EditorGUILayout.BeginVertical(EditorStyles.helpBox);
-            EditorGUILayout.LabelField("Cateory Name", item.name);
+            item.name = EditorGUILayout.TextField("Name", item.name);
             item.audioObjectPrefab = (GameObject)EditorGUILayout.ObjectField("Category AO prefab", item.audioObjectPrefab, typeof(GameObject), false);
             item.usingDefaultPrefab = item.audioObjectPrefab == null;
             item.categoryVolume = EditorGUILayout.Slider("Category Volume", item.categoryVolume, 0f, 1f);
             EditorGUI.indentLevel++;
-            EditorGUILayout.BeginVertical(EditorStyles.helpBox);
             // EditorGUILayout.Foldout();
-            item.foldOutSoundItems = EditorGUILayout.Foldout(item.foldOutSoundItems, "Sound Items", true);
+            item.foldOutSoundItems = EditorGUILayout.Foldout(item.foldOutSoundItems, "SOUND ITEMS", true);
             if (item.foldOutSoundItems)
             {
                 for (int j = 0; j < item.soundItems.Length; j++)
@@ -83,14 +103,15 @@ namespace OSAC.Editor
                     DrawSoundItem(item.soundItems[j]);
                 }
             }
-            EditorGUILayout.EndVertical();
             EditorGUI.indentLevel--;
             EditorGUILayout.EndVertical();
         }
 
         private void DrawSoundItem(Model.SoundItem item)
         {
-            EditorGUILayout.LabelField(item.name);
+            EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+            EditorGUILayout.LabelField("Name", item.name);
+            EditorGUILayout.EndVertical();
         }
     }
 }
