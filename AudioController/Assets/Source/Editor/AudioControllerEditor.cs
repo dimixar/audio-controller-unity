@@ -67,12 +67,15 @@ namespace OSAC.Editor
             if (GUILayout.Button("ADD CATEGORY"))
             {
                 var category = new Model.CategoryItem();
-                var categories = new Model.CategoryItem[db.items.Length + 1];
-                db.items.CopyTo(categories, 0);
+                var categories = new Model.CategoryItem[db.items != null ? db.items.Length + 1 : 1];
+                if (db.items != null)
+                    db.items.CopyTo(categories, 0);
                 categories[categories.Length - 1] = category;
                 db.items = categories;
             }
 
+            if (db.items == null)
+                return;
             if (db.items.Length == 0)
                 return;
 
