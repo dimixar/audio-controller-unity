@@ -52,6 +52,7 @@ namespace OSAC.Editor
             }
 
             EditorUtility.SetDirty(this);
+            EditorUtility.SetDirty(_ac._database);
         }
 
         private void DrawMain()
