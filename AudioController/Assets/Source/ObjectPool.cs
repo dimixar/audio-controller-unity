@@ -23,6 +23,7 @@ public class ObjectPool : MonoBehaviour
 
         pool = new PrefabBasedPool(prefab);
         GameObject parent = new GameObject();
+        parent.name = pool.prefab.name + " ::: POOL";
         parent.transform.parent = this.gameObject.transform;
         pool.parent = parent.transform;
         pools.Add(pool);

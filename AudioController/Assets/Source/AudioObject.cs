@@ -34,6 +34,7 @@ namespace OSAC
         {
             _id = id;
             _clip = clip;
+            gameObject.name = id;
         }
 
         public void Play()

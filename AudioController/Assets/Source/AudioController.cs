@@ -43,9 +43,17 @@ namespace OSAC
         /// Plays the first found Sound Item that has that name.
         /// </summary>
         /// <param name="name">The name of the sound item.</param>
-        public void Play(string name)
+        public AudioController Play(string name)
         {
-            PlayImpl(name);
+            return PlaySingleImpl(name);
+        }
+
+        public AudioController Play(params string[] names)
+        {
+            UnityEngine.Assertions.Assert.IsNotNull(names, "Send at least one name in the queue to play!!!");
+
+            //TODO: start a coroutine to play objects in a queue.
+            return this;
         }
 
         public void PlayFromCategory(string categoryName, string name = null)
@@ -56,7 +64,7 @@ namespace OSAC
         #endregion
 
         #region Private methods
-        private void PlayImpl(string name)
+        private AudioController PlaySingleImpl(string name)
         {
             SoundItem item = null;
             System.Predicate<SoundItem> soundItemMatch = (x) => x.name == name;
@@ -67,14 +75,20 @@ namespace OSAC
             });
 
             if (category == null)
-                return;
+                return null;
 
             GameObject prefab = category.usingDefaultPrefab ? _defaultPrefab : category.audioObjectPrefab;
             GameObject obj = _pool.GetFreeObject(prefab);
             var audioObj = obj.GetComponent<AudioObject>();
-            // TODO: Add random id generator
-            audioObj.Setup("TEMP", item.clip);
+            string id = BuildID(item.name, category.name);
+            audioObj.Setup(id, item.clip);
             audioObj.Play();
+            return this;
+        }
+
+        private string BuildID(string name, string category)
+        {
+            return "CAT-" + category + ":::" + name + "-NAME";
         }
         #endregion
 
