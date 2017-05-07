@@ -25,7 +25,6 @@ namespace OSAC
         public AudioCueData data { get { return _data; } }
 
         private int _currentItem = 0;
-        private bool _isPaused = false;
         private bool _isUsable = true;
         private AudioCueData _data;
 
@@ -43,7 +42,6 @@ namespace OSAC
             audioObject.Setup(_data.sounds[_currentItem].name, _data.sounds[_currentItem].clip, realVolume);
             _currentItem += 1;
             audioObject.Play();
-            _isPaused = false;
         }
 
         /// <summary>
