@@ -17,6 +17,7 @@ namespace OSAC
         private AudioSource _source;
 
         private Coroutine _playingRoutine;
+        private bool _isPaused;
 
         private bool _isFree = true;
         private PrefabBasedPool _pool;
@@ -51,6 +52,22 @@ namespace OSAC
             _playingRoutine = StartCoroutine(PlayingRoutine());
         }
 
+        public void Pause()
+        {
+            if (_source == null)
+                return;
+            _isPaused = true;
+            _source.Pause();
+        }
+
+        public void Resume()
+        {
+            if (_source == null)
+                return;
+            _source.Play();
+            _isPaused = false;
+        }
+
         public void Stop()
         {
             if (_playingRoutine == null)
@@ -71,7 +88,7 @@ namespace OSAC
             while (true)
             {
                 yield return new WaitForSeconds(0.05f);
-                if (!_source.isPlaying)
+                if (!_source.isPlaying && !_isPaused)
                 {
                     break;
                 }
