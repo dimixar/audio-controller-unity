@@ -122,7 +122,6 @@ namespace OSAC
                 }
             }
 
-            Debug.Log("sound items count = " + items.Count);
             if (items.Count == 0)
                 return null;
 
