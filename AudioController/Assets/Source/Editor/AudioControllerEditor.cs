@@ -13,32 +13,57 @@ namespace OSAC.Editor
         private AudioController _ac;
         private string categoryNameSearch = "";
 
+        private string _dbPath;
+        private string _dbName;
+
         public override void OnInspectorGUI()
         {
-            // base.OnInspectorGUI();
-
             _ac = target as AudioController;
 
             _ac._defaultPrefab = (GameObject)EditorGUILayout.ObjectField("Default AudioObject prefab", (Object)(_ac._defaultPrefab), typeof(GameObject), false);
-            _ac._dbPath = EditorGUILayout.TextField("DB Path", _ac._dbPath);
-            _ac._dbName = EditorGUILayout.TextField("DB Name", _ac._dbName);
+            if (_ac._database == null)
+            {
+                _dbName = EditorGUILayout.TextField("Asset Name", _dbName);
+                _dbPath = EditorGUILayout.TextField("Relative path", _dbPath);
+            }
+            else
+            {
+                _dbName = _ac._database.assetName;
+                _dbPath = _ac._database.relativePath;
+                EditorGUILayout.LabelField("Asset Name", _dbName, EditorStyles.largeLabel);
+                EditorGUILayout.LabelField("Relative Path", _dbPath, EditorStyles.miniBoldLabel);
+            }
 
-            string path = "Assets/" + (string.IsNullOrEmpty(_ac._dbPath) ? "" : (_ac._dbPath + "/")) + _ac._dbName + ".asset";
+            string path = "Assets/" + (string.IsNullOrEmpty(_dbPath) ? "" : (_dbPath + "/")) + _dbName + ".asset";
+
+            if (string.IsNullOrEmpty(_ac._dbName))
+            {
+                _ac._dbName = path;
+            }
+            else
+            {
+                if ((_ac._dbName.Contains(_dbPath) && _ac._dbName.Contains(_dbName)) == false)
+                {
+                    _ac._dbName = path;
+                }
+            }
 
             if (_ac._database == null)
             {
-                AudioControllerData db = AssetDatabase.LoadAssetAtPath<AudioControllerData>(path);
+                AudioControllerData db = AssetDatabase.LoadAssetAtPath<AudioControllerData>(_ac._dbName);
                 if (db == null)
                 {
                     if (GUILayout.Button("Create Database"))
                     {
                         var asset = ScriptableObject.CreateInstance<AudioControllerData>();
-                        AssetDatabase.CreateAsset(asset, path);
+                        AssetDatabase.CreateAsset(asset, _ac._dbName);
 
                         AssetDatabase.SaveAssets();
                         AssetDatabase.Refresh();
 
                         _ac._database = asset;
+                        _ac._database.relativePath = _dbPath;
+                        _ac._database.assetName = _dbName;
                     }
                 }
                 else
@@ -51,16 +76,20 @@ namespace OSAC.Editor
                 DrawMain();
             }
 
+            EditorUtility.SetDirty(target);
             EditorUtility.SetDirty(this);
-            EditorUtility.SetDirty(_ac._database);
+            if (_ac._database != null)
+                EditorUtility.SetDirty(_ac._database);
         }
 
         private void DrawMain()
         {
+            if (_ac._database == null)
+                return;
             EditorGUILayout.BeginHorizontal(EditorStyles.helpBox);
             if (GUILayout.Button("DELETE DATA"))
             {
-                AssetDatabase.DeleteAsset("Assets/" + (string.IsNullOrEmpty(_ac._dbPath) ? "" : (_ac._dbPath + "/")) + _ac._dbName + ".asset");
+                AssetDatabase.DeleteAsset(AssetDatabase.GetAssetPath(_ac._database));
                 return;
             }
             var db = _ac._database;
@@ -74,7 +103,7 @@ namespace OSAC.Editor
                 db.items = categories;
             }
             EditorGUILayout.EndHorizontal();
-            DrawCategories(db);
+            DrawCategories(_ac._database);
         }
 
         private void DrawCategories(Model.AudioControllerData db)

@@ -100,6 +100,9 @@ namespace OSAC
         }
     }
 
+    /// <summary>
+    /// Used for sending data to play to AudioCue
+    /// </summary>
     public struct AudioCueData
     {
         public SoundItem[] sounds;

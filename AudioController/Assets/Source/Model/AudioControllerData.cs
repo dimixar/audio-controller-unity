@@ -8,13 +8,7 @@ namespace OSAC.Model
     {
         public CategoryItem[] items;
         public bool foldOutCategories = false;
-
-        public CategoryItem getCategoryItem(string name)
-        {
-            return System.Array.Find(items, (x) =>
-            {
-                return x.name == name;
-            });
-        }
+        public string relativePath;
+        public string assetName;
     }
 }

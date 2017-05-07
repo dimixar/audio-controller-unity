@@ -22,12 +22,7 @@ namespace OSAC
 
         #region Public methods and properties
 
-        [HideInInspector]
         public string _dbName;
-
-        // This Path starts relatively to Assets folder.
-        [HideInInspector]
-        public string _dbPath;
 
         public AudioControllerData _database;
 
