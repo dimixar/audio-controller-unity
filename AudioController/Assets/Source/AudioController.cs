@@ -40,20 +40,99 @@ namespace OSAC
         }
 
         /// <summary>
-        /// Plays the first found Sound Item that has that name.
+        /// Plays a sound item
         /// </summary>
-        /// <param name="name">The name of the sound item.</param>
-        public AudioController Play(string name)
+        /// <param name="name">Name of the sound item.</param>
+        /// <param name="categoryName">OPTIONAL: Using sound item only from that category.</param>
+        /// <returns>An AudioCue object which is used to track currently playing sound.</returns>
+        public AudioCue Play(string name, string categoryName = null)
         {
-            return PlaySingleImpl(name);
+            return Play(new[] { name }, categoryName);
         }
 
-        public AudioController Play(params string[] names)
+        /// <summary>
+        /// Plays a list of sound items in a row.
+        /// </summary>
+        /// <param name="names">Array with sound item names.</param>
+        /// <param name="categoryName">OPTIONAL: Using sound items only from that category.</param>
+        /// <returns>An AudioCue object which is used to track currently playing sound.</returns>
+        public AudioCue Play(string[] names, string categoryName = null)
         {
-            UnityEngine.Assertions.Assert.IsNotNull(names, "Send at least one name in the queue to play!!!");
+            UnityEngine.Assertions.Assert.IsNotNull(names, "[AudioController] names cannot be null");
+            if (names != null)
+                UnityEngine.Assertions.Assert.IsFalse(names.Length == 0, "[AudioController] names cannot have 0 strings");
 
-            //TODO: start a coroutine to play objects in a queue.
-            return this;
+            CategoryItem category = null;
+            GameObject prefab = null;
+            List<SoundItem> items = new List<SoundItem>();
+
+            if (string.IsNullOrEmpty(categoryName) == false)
+            {
+                category = System.Array.Find(_database.items, (item) =>
+                {
+                    return item.name == categoryName;
+                });
+
+                Debug.Log(category);
+                if (category == null)
+                    return null;
+
+                prefab = category.usingDefaultPrefab ? _defaultPrefab : category.audioObjectPrefab;
+                for (int i = 0; i < names.Length; i++)
+                {
+                    SoundItem item = System.Array.Find(category.soundItems, (x) =>
+                    {
+                        return x.name == names[i];
+                    });
+
+                    if (item != null)
+                        items.Add(item);
+                }
+            }
+            else
+            {
+                prefab = _defaultPrefab;
+                CategoryItem[] categoryItems = _database.items;
+                for (int i = 0; i < names.Length; i++)
+                {
+                    SoundItem item = null;
+                    for (int j = 0; j < categoryItems.Length; j++)
+                    {
+                        item = System.Array.Find(categoryItems[j].soundItems, (x) => x.name == names[i]);
+                        if (item != null)
+                            break;
+                    }
+                    if (item != null)
+                        items.Add(item);
+                }
+            }
+
+            Debug.Log("sound items count = " + items.Count);
+            if (items.Count == 0)
+                return null;
+
+            AudioCue cue = new AudioCue();
+            cue.Prefab = prefab;
+            cue.audioObject = _pool.GetFreeObject(prefab).GetComponent<AudioObject>();
+            cue.Items = items.ToArray();
+            cue.Play();
+
+            return cue;
+        }
+
+        /// <summary>
+        /// Creates a new copy of the AudioCue and plays it.
+        /// </summary>
+        /// <param name="cue">AudioCue to clone and play.</param>
+        /// <returns>Cloned AudioCue.</returns>
+        public AudioCue Play(AudioCue cue)
+        {
+            var ncue = new AudioCue();
+            ncue.Items = cue.Items;
+            ncue.audioObject = _pool.GetFreeObject(cue.Prefab).GetComponent<AudioObject>();
+            ncue.Prefab = cue.Prefab;
+            ncue.Play();
+            return ncue;
         }
 
         public void PlayFromCategory(string categoryName, string name = null)
@@ -64,32 +143,6 @@ namespace OSAC
         #endregion
 
         #region Private methods
-        private AudioController PlaySingleImpl(string name)
-        {
-            SoundItem item = null;
-            System.Predicate<SoundItem> soundItemMatch = (x) => x.name == name;
-            CategoryItem category = System.Array.Find(_database.items, (x) =>
-            {
-                item = System.Array.Find(x.soundItems, soundItemMatch);
-                return item != null;
-            });
-
-            if (category == null)
-                return null;
-
-            GameObject prefab = category.usingDefaultPrefab ? _defaultPrefab : category.audioObjectPrefab;
-            GameObject obj = _pool.GetFreeObject(prefab);
-            var audioObj = obj.GetComponent<AudioObject>();
-            string id = BuildID(item.name, category.name);
-            audioObj.Setup(id, item.clip);
-            audioObj.Play();
-            return this;
-        }
-
-        private string BuildID(string name, string category)
-        {
-            return "CAT-" + category + ":::" + name + "-NAME";
-        }
         #endregion
 
         #region MonoBehaviour methods
@@ -114,6 +167,12 @@ namespace OSAC
         void TestPlay2()
         {
             Play("test2");
+        }
+
+        [ContextMenu("Test Cue")]
+        void TestCue()
+        {
+            Play(new[] { "test","test","test", "test2" });
         }
 
         #endregion
