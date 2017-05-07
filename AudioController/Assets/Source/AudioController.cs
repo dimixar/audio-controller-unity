@@ -150,11 +150,6 @@ namespace OSAC
             return ncue;
         }
 
-        public void PlayFromCategory(string categoryName, string name = null)
-        {
-            //TODO: Add implementation
-        }
-
         #endregion
 
         #region Private methods
@@ -165,29 +160,6 @@ namespace OSAC
         void Awake()
         {
             _pool = GetComponent<ObjectPool>();
-        }
-
-        void OnEnable()
-        {
-        }
-
-        [ContextMenu("Test Play")]
-        void TestPlay()
-        {
-            Play("test");
-        }
-
-
-        [ContextMenu("Test Play 2")]
-        void TestPlay2()
-        {
-            Play("test2");
-        }
-
-        [ContextMenu("Test Cue")]
-        void TestCue()
-        {
-            Play(new[] { "test","test","test", "test2" });
         }
 
         #endregion
