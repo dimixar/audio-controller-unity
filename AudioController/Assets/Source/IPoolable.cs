@@ -4,5 +4,9 @@ using UnityEngine;
 
 public interface IPoolable
 {
+    PrefabBasedPool pool {
+        get; set;
+    }
+
     bool IsFree();
 }

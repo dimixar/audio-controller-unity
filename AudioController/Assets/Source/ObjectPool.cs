@@ -75,8 +75,16 @@ public class PrefabBasedPool
             return freeObj;
 
         var obj = GameObject.Instantiate(prefab, Vector3.zero, Quaternion.identity, parent);
+        var objPoolable = obj.GetComponent<IPoolable>();
+        objPoolable.pool = this;
         pool.Add(obj);
 
         return obj;
+    }
+
+    public void Despawn(GameObject obj)
+    {
+        obj.transform.SetParent(parent);
+        obj.SetActive(false);
     }
 }

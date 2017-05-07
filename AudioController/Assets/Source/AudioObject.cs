@@ -19,9 +19,13 @@ namespace OSAC
         private Coroutine _playingRoutine;
 
         private bool _isFree = true;
+        private PrefabBasedPool _pool;
         #endregion
 
         #region Public methods and properties
+        public bool isDespawnOnFinishedPlaying {
+            get; set;
+        }
         public string clipName
         {
             get
@@ -81,9 +85,17 @@ namespace OSAC
             _source.clip = null;
             _playingRoutine = null;
             _isFree = true;
+
+            if (isDespawnOnFinishedPlaying)
+                _pool.Despawn(gameObject);
         }
 
         #region IPoolable methods
+        PrefabBasedPool IPoolable.pool {
+            get { return _pool; }
+            set { _pool = value; }
+        }
+
         public bool IsFree()
         {
             return _isFree;
