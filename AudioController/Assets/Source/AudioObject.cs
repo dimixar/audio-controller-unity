@@ -35,11 +35,24 @@ namespace OSAC
             }
         }
 
-        public void Setup(string id, AudioClip clip)
+        public AudioSource source
+        {
+            get { return _source; }
+        }
+
+        public string ID {
+            get { return _id; }
+        }
+
+        public void Setup(string id, AudioClip clip, float volume)
         {
             _id = id;
             _clip = clip;
-            gameObject.name = id;
+            gameObject.name = _id;
+            if (_source == null)
+                _source = GetComponent<AudioSource>();
+
+            _source.volume = volume;
         }
 
         public void Play()

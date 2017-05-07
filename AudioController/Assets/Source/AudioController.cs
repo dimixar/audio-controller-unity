@@ -65,6 +65,7 @@ namespace OSAC
             CategoryItem category = null;
             GameObject prefab = null;
             List<SoundItem> items = new List<SoundItem>();
+            List<float> catVolumes = new List<float>();
 
             if (string.IsNullOrEmpty(categoryName) == false)
             {
@@ -86,7 +87,10 @@ namespace OSAC
                     });
 
                     if (item != null)
+                    {
+                        catVolumes.Add(category.categoryVolume);
                         items.Add(item);
+                    }
                 }
             }
             else
@@ -96,11 +100,22 @@ namespace OSAC
                 for (int i = 0; i < names.Length; i++)
                 {
                     SoundItem item = null;
+                    item = items.Find((x) => names[i] == x.name);
+                    if (item != null)
+                    {
+                        catVolumes.Add(catVolumes[items.IndexOf(item)]);
+                        items.Add(item);
+                        continue;
+                    }
+
                     for (int j = 0; j < categoryItems.Length; j++)
                     {
                         item = System.Array.Find(categoryItems[j].soundItems, (x) => x.name == names[i]);
                         if (item != null)
+                        {
+                            catVolumes.Add(categoryItems[j].categoryVolume);
                             break;
+                        }
                     }
                     if (item != null)
                         items.Add(item);
@@ -112,10 +127,12 @@ namespace OSAC
                 return null;
 
             AudioCue cue = new AudioCue();
-            cue.Prefab = prefab;
+            AudioCueData data;
+            data.audioPrefab = prefab;
+            data.sounds = items.ToArray();
+            data.categoryVolumes = catVolumes.ToArray();
             cue.audioObject = _pool.GetFreeObject(prefab).GetComponent<AudioObject>();
-            cue.Items = items.ToArray();
-            cue.Play();
+            cue.Play(data);
 
             return cue;
         }
@@ -128,10 +145,8 @@ namespace OSAC
         public AudioCue Play(AudioCue cue)
         {
             var ncue = new AudioCue();
-            ncue.Items = cue.Items;
-            ncue.audioObject = _pool.GetFreeObject(cue.Prefab).GetComponent<AudioObject>();
-            ncue.Prefab = cue.Prefab;
-            ncue.Play();
+            ncue.audioObject = _pool.GetFreeObject(cue.data.audioPrefab).GetComponent<AudioObject>();
+            ncue.Play(cue.data);
             return ncue;
         }
 

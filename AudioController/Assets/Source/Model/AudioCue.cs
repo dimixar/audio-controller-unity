@@ -22,29 +22,25 @@ namespace OSAC
         public Action OnPlayCueEnded;
         public AudioObject audioObject;
 
-        public SoundItem[] Items
-        {
-            set { _items = value; }
-            get { return _items; }
-        }
+        public AudioCueData data { get { return _data; } }
 
-        public GameObject Prefab { get; set; }
-
-        private SoundItem[] _items;
         private int _currentItem = 0;
         private bool _isPaused = false;
         private bool _isUsable = true;
+        private AudioCueData _data;
 
         /// <summary>
         /// Will start playing the cue.
         /// NOTE: It is called automatically if gotten from AudioController.
         /// </summary>
-        public void Play()
+        public void Play(AudioCueData data)
         {
+            _data = data;
             UnityEngine.Assertions.Assert.IsTrue(_isUsable, "[AudioCue] AudioCue cannot be reused!!!");
             audioObject.OnFinishedPlaying = OnFinishedPlaying_handler;
             audioObject.isDespawnOnFinishedPlaying = false;
-            audioObject.Setup(_items[_currentItem].name, _items[_currentItem].clip);
+            float realVolume = _data.sounds[_currentItem].volume * _data.categoryVolumes[_currentItem];
+            audioObject.Setup(_data.sounds[_currentItem].name, _data.sounds[_currentItem].clip, realVolume);
             _currentItem += 1;
             audioObject.Play();
             _isPaused = false;
@@ -68,16 +64,6 @@ namespace OSAC
             audioObject.Resume();
         }
 
-        /// <summary>
-        /// Will replay the cue.
-        /// NOTE: Do not call it directly!!! Send it to audioController instead.
-        /// </summary>
-        public void Replay()
-        {
-            _isUsable = audioObject != null;
-            Play();
-        }
-
         public void Stop(bool shouldCallOnFinishedCue = false)
         {
             audioObject.OnFinishedPlaying = null;
@@ -97,14 +83,15 @@ namespace OSAC
 
         private void OnFinishedPlaying_handler(AudioObject obj)
         {
-            string itemName = _items[_currentItem - 1].name;
+            string itemName = _data.sounds[_currentItem - 1].name;
             if (OnPlayEnded != null) {
                 OnPlayEnded(itemName);
             }
 
-            if (_currentItem < _items.Length)
+            if (_currentItem < _data.sounds.Length)
             {
-                audioObject.Setup(_items[_currentItem].name, _items[_currentItem].clip);
+                float realVolume = _data.sounds[_currentItem].volume * _data.categoryVolumes[_currentItem];
+                audioObject.Setup(_data.sounds[_currentItem].name, _data.sounds[_currentItem].clip, realVolume);
                 _currentItem += 1;
                 audioObject.Play();
             }
@@ -113,5 +100,12 @@ namespace OSAC
                 Stop(true);
             }
         }
+    }
+
+    public struct AudioCueData
+    {
+        public SoundItem[] sounds;
+        public float[] categoryVolumes;
+        public GameObject audioPrefab;
     }
 }
