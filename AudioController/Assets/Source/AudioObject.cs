@@ -94,17 +94,17 @@ namespace OSAC
                 }
             }
 
-            if (OnFinishedPlaying != null)
-            {
-                OnFinishedPlaying(this);
-            }
-
             _source.clip = null;
             _playingRoutine = null;
             _isFree = true;
 
             if (isDespawnOnFinishedPlaying)
                 _pool.Despawn(gameObject);
+
+            if (OnFinishedPlaying != null)
+            {
+                OnFinishedPlaying(this);
+            }
         }
 
         #region IPoolable methods
