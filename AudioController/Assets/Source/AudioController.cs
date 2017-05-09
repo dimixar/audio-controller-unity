@@ -34,24 +34,56 @@ namespace OSAC
             }
         }
 
-        /// <summary>
-        /// Plays a sound item
-        /// </summary>
-        /// <param name="name">Name of the sound item.</param>
-        /// <param name="categoryName">OPTIONAL: Using sound item only from that category.</param>
-        /// <returns>An AudioCue object which is used to track currently playing sound.</returns>
+        public AudioCue Play(string[] names)
+        {
+            return Play(names, (Transform)(null));
+        }
+        public AudioCue Play(string[] names, Transform parent)
+        {
+            return Play(names, parent, null);
+        }
+        public AudioCue Play(string[] names, Transform parent, string categoryName)
+        {
+            return Play(names, parent, 0f, 0f, categoryName);
+        }
+        public AudioCue Play(string[] names, float fadeInTime = 0, float fadeOutTime = 0f)
+        {
+            return Play(names, null, fadeInTime, fadeOutTime);
+        }
+        public AudioCue Play(string[] names, Transform parent, float fadeInTime, float fadeOutTime = 0f)
+        {
+            return Play(names, parent, fadeInTime, fadeOutTime, null);
+        }
+        public AudioCue Play(string[] names, string categoryName)
+        {
+            return Play(names, null, 0f, 0f, categoryName);
+        }
+        public AudioCue Play(string name)
+        {
+            return Play(new[] {name});
+        }
+        public AudioCue Play(string name, Transform parent)
+        {
+            return Play(new[] {name}, parent);
+        }
+        public AudioCue Play(string name, Transform parent, string categoryName)
+        {
+            return Play(new [] {name}, parent, categoryName);
+        }
+        public AudioCue Play(string name, Transform parent, float fadeInTime, float fadeOutTime = 0f)
+        {
+            return Play(new [] {name}, parent, fadeInTime, fadeOutTime);
+        }
         public AudioCue Play(string name, string categoryName = null)
         {
             return Play(new[] { name }, categoryName);
         }
+        public AudioCue Play(string name, float fadeInTime = 0, float fadeOutTime = 0f)
+        {
+            return Play(new[] { name }, fadeInTime, fadeOutTime);
+        }
 
-        /// <summary>
-        /// Plays a list of sound items in a row.
-        /// </summary>
-        /// <param name="names">Array with sound item names.</param>
-        /// <param name="categoryName">OPTIONAL: Using sound items only from that category.</param>
-        /// <returns>An AudioCue object which is used to track currently playing sound.</returns>
-        public AudioCue Play(string[] names, string categoryName = null)
+        public AudioCue Play(string[] names, Transform parent = null, float fadeInTime = 0f, float fadeOutTime = 0f, string categoryName = null)
         {
             UnityEngine.Assertions.Assert.IsNotNull(names, "[AudioController] names cannot be null");
             if (names != null)
@@ -125,7 +157,13 @@ namespace OSAC
             data.audioPrefab = prefab;
             data.sounds = items.ToArray();
             data.categoryVolumes = catVolumes.ToArray();
+            data.fadeInTime = fadeInTime;
+            data.fadeOutTime = fadeOutTime;
+            data.isFadeIn = data.fadeInTime >= 0.1f;
+            data.isFadeOut = data.fadeOutTime >= 0.1f;
             cue.audioObject = _pool.GetFreeObject(prefab).GetComponent<AudioObject>();
+            if (parent != null)
+                cue.audioObject.transform.SetParent(parent, false);
             cue.Play(data);
 
             return cue;
@@ -138,9 +176,26 @@ namespace OSAC
         /// <returns>Cloned AudioCue.</returns>
         public AudioCue Play(AudioCue cue)
         {
+            return Play(cue, null);
+        }
+
+        public AudioCue Play(AudioCue cue, Transform parent)
+        {
+            return Play(cue, parent, 0f);
+        }
+
+        public AudioCue Play(AudioCue cue, Transform parent, float fadeInTime, float fadeOutTime = 0f)
+        {
             var ncue = new AudioCue();
             ncue.audioObject = _pool.GetFreeObject(cue.data.audioPrefab).GetComponent<AudioObject>();
-            ncue.Play(cue.data);
+            if (parent != null)
+                ncue.audioObject.transform.SetParent(parent, false);
+            AudioCueData data = cue.data;
+            data.fadeInTime = fadeInTime;
+            data.fadeOutTime = fadeOutTime;
+            data.isFadeIn = data.fadeInTime >= 0.1f;
+            data.isFadeOut = data.fadeOutTime >= 0.1f;
+            ncue.Play(data);
             return ncue;
         }
 

@@ -108,5 +108,9 @@ namespace OSAC
         public SoundItem[] sounds;
         public float[] categoryVolumes;
         public GameObject audioPrefab;
+        public float fadeInTime;
+        public float fadeOutTime;
+        public bool isFadeIn;
+        public bool isFadeOut;
     }
 }

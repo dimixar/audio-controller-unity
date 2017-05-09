@@ -88,7 +88,7 @@ public class PrefabBasedPool
 
     public void Despawn(GameObject obj)
     {
-        obj.transform.SetParent(parent);
+        obj.transform.SetParent(parent, false);
         obj.SetActive(false);
     }
 }
