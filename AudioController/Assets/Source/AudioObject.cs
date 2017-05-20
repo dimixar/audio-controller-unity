@@ -21,6 +21,9 @@ namespace OSAC
 
         private bool _isFree = true;
         private PrefabBasedPool _pool;
+        private float _fadeInTime;
+        private float _fadeOutTime;
+        private float _volume;
         #endregion
 
         #region Public methods and properties
@@ -44,7 +47,7 @@ namespace OSAC
             get { return _id; }
         }
 
-        public void Setup(string id, AudioClip clip, float volume)
+        public void Setup(string id, AudioClip clip, float volume, float fadeInTime = 0f, float fadeOutTime = 0f)
         {
             _id = id;
             _clip = clip;
@@ -52,7 +55,11 @@ namespace OSAC
             if (_source == null)
                 _source = GetComponent<AudioSource>();
 
-            _source.volume = volume;
+            _source.volume = 0;
+            _source.time = 0f;
+            _volume = volume;
+            _fadeInTime = fadeInTime;
+            _fadeOutTime = fadeOutTime;
         }
 
         public void Play()
@@ -60,6 +67,7 @@ namespace OSAC
             if (_source == null)
                 _source = GetComponent<AudioSource>();
             _source.clip = _clip;
+            StartCoroutine(FadeRoutine(_fadeInTime, _volume));
             _source.Play();
             _isFree = false;
             _playingRoutine = StartCoroutine(PlayingRoutine());
@@ -96,11 +104,42 @@ namespace OSAC
         }
         #endregion
 
+        private IEnumerator FadeRoutine(float fadeTime, float value)
+        {
+            if (fadeTime < 0.1f)
+            {
+                _source.volume = value;
+                yield break;
+            }
+
+            float initVal = _source.volume;
+            float fadeSpeed = 1f / (fadeTime / Time.deltaTime);
+            for (float t = 0f; t < 1f; t += fadeSpeed)
+            {
+                float val = Mathf.SmoothStep(initVal, value, t);
+                _source.volume = val;
+                yield return null;
+            }
+
+            _source.volume = value;
+        }
+
+        private IEnumerator StopRoutine()
+        {
+            yield return StartCoroutine(FadeRoutine(_fadeOutTime, 0f));
+            _source.Stop();
+        }
+
         private IEnumerator PlayingRoutine()
         {
             while (true)
             {
-                yield return new WaitForSeconds(0.05f);
+                yield return null;
+                float fadeOutTrigger = _source.clip.length - _fadeOutTime;
+                if (_source.time >= fadeOutTrigger)
+                {
+                    yield return StartCoroutine(FadeRoutine(_fadeOutTime, 0f));
+                }
                 if (!_source.isPlaying && !_isPaused)
                 {
                     break;
@@ -110,6 +149,8 @@ namespace OSAC
             _source.clip = null;
             _playingRoutine = null;
             _isFree = true;
+            _volume = 0f;
+            _source.time = 0f;
 
             if (isDespawnOnFinishedPlaying)
                 _pool.Despawn(gameObject);

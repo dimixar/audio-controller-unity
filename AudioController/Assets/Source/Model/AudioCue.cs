@@ -39,7 +39,7 @@ namespace OSAC
             audioObject.OnFinishedPlaying = OnFinishedPlaying_handler;
             audioObject.isDespawnOnFinishedPlaying = false;
             float realVolume = _data.sounds[_currentItem].volume * _data.categoryVolumes[_currentItem];
-            audioObject.Setup(_data.sounds[_currentItem].name, _data.sounds[_currentItem].clip, realVolume);
+            audioObject.Setup(_data.sounds[_currentItem].name, _data.sounds[_currentItem].clip, realVolume, _data.fadeInTime, _data.fadeOutTime);
             _currentItem += 1;
             audioObject.Play();
         }
@@ -89,7 +89,14 @@ namespace OSAC
             if (_currentItem < _data.sounds.Length)
             {
                 float realVolume = _data.sounds[_currentItem].volume * _data.categoryVolumes[_currentItem];
-                audioObject.Setup(_data.sounds[_currentItem].name, _data.sounds[_currentItem].clip, realVolume);
+                if (_currentItem == _data.sounds.Length - 1)
+                {
+                    audioObject.Setup(_data.sounds[_currentItem].name, _data.sounds[_currentItem].clip, realVolume, _data.fadeInTime, _data.fadeOutTime);
+                }
+                else
+                {
+                    audioObject.Setup(_data.sounds[_currentItem].name, _data.sounds[_currentItem].clip, realVolume);
+                }
                 _currentItem += 1;
                 audioObject.Play();
             }
