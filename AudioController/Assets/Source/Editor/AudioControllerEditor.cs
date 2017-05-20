@@ -42,10 +42,11 @@ namespace OSAC.Editor
             }
             else
             {
-                if ((_ac._dbName.Contains(_dbPath) && _ac._dbName.Contains(_dbName)) == false)
-                {
-                    _ac._dbName = path;
-                }
+                if (!string.IsNullOrEmpty(_dbPath) && !string.IsNullOrEmpty(_dbName))
+                    if ((_ac._dbName.Contains(_dbPath) && _ac._dbName.Contains(_dbName)) == false)
+                    {
+                        _ac._dbName = path;
+                    }
             }
 
             if (_ac._database == null)
