@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace OSAC.Model
+namespace OSSC.Model
 {
     [System.Serializable]
     public class SoundItem
