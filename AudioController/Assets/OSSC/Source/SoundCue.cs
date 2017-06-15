@@ -38,10 +38,8 @@ namespace OSSC
             UnityEngine.Assertions.Assert.IsTrue(_isUsable, "[AudioCue] AudioCue cannot be reused!!!");
             audioObject.OnFinishedPlaying = OnFinishedPlaying_handler;
             audioObject.isDespawnOnFinishedPlaying = false;
-            float realVolume = _data.sounds[_currentItem].volume * _data.categoryVolumes[_currentItem];
-            audioObject.Setup(_data.sounds[_currentItem].name, _data.sounds[_currentItem].clip, realVolume, _data.fadeInTime, _data.fadeOutTime);
+            PlayCurrentItem();
             _currentItem += 1;
-            audioObject.Play();
         }
 
         /// <summary>
@@ -88,22 +86,37 @@ namespace OSSC
 
             if (_currentItem < _data.sounds.Length)
             {
-                float realVolume = _data.sounds[_currentItem].volume * _data.categoryVolumes[_currentItem];
-                if (_currentItem == _data.sounds.Length - 1)
-                {
-                    audioObject.Setup(_data.sounds[_currentItem].name, _data.sounds[_currentItem].clip, realVolume, _data.fadeInTime, _data.fadeOutTime);
-                }
-                else
-                {
-                    audioObject.Setup(_data.sounds[_currentItem].name, _data.sounds[_currentItem].clip, realVolume);
-                }
+                PlayCurrentItem();
                 _currentItem += 1;
-                audioObject.Play();
+
             }
             else
             {
-                Stop(true);
+                if (_data.isLooped)
+                {
+                    _currentItem = 0;
+                    PlayCurrentItem();
+                    _currentItem += 1;
+                }
+                else
+                {
+                    Stop(true);
+                }
             }
+        }
+
+        private void PlayCurrentItem()
+        {
+            float realVolume = _data.sounds[_currentItem].volume * _data.categoryVolumes[_currentItem];
+            if (_currentItem == _data.sounds.Length - 1)
+            {
+                audioObject.Setup(_data.sounds[_currentItem].name, _data.sounds[_currentItem].clip, realVolume, _data.fadeInTime, _data.fadeOutTime);
+            }
+            else
+            {
+                audioObject.Setup(_data.sounds[_currentItem].name, _data.sounds[_currentItem].clip, realVolume);
+            }
+            audioObject.Play();
         }
     }
 
@@ -119,5 +132,7 @@ namespace OSSC
         public float fadeOutTime;
         public bool isFadeIn;
         public bool isFadeOut;
+
+        public bool isLooped;
     }
 }

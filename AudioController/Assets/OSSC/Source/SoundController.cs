@@ -34,53 +34,53 @@ namespace OSSC
             }
         }
 
-        public SoundCue Play(string[] names)
+        public SoundCue Play(string[] names, bool isLooped = false)
         {
-            return Play(names, (Transform)(null));
+            return Play(names, (Transform)(null), isLooped);
         }
-        public SoundCue Play(string[] names, Transform parent)
+        public SoundCue Play(string[] names, Transform parent, bool isLooped = false)
         {
-            return Play(names, parent, null);
+            return Play(names, parent, null, isLooped);
         }
-        public SoundCue Play(string[] names, Transform parent, string categoryName)
+        public SoundCue Play(string[] names, Transform parent, string categoryName, bool isLooped = false)
         {
-            return Play(names, parent, 0f, 0f, categoryName);
+            return Play(names, parent, 0f, 0f, categoryName, isLooped);
         }
-        public SoundCue Play(string[] names, float fadeInTime = 0, float fadeOutTime = 0f)
+        public SoundCue Play(string[] names, float fadeInTime = 0, float fadeOutTime = 0f, bool isLooped = false)
         {
-            return Play(names, null, fadeInTime, fadeOutTime);
+            return Play(names, null, fadeInTime, fadeOutTime, isLooped);
         }
-        public SoundCue Play(string[] names, Transform parent, float fadeInTime, float fadeOutTime = 0f)
+        public SoundCue Play(string[] names, Transform parent, float fadeInTime, float fadeOutTime = 0f, bool isLooped = false)
         {
-            return Play(names, parent, fadeInTime, fadeOutTime, null);
+            return Play(names, parent, fadeInTime, fadeOutTime, null, isLooped);
         }
-        public SoundCue Play(string[] names, string categoryName)
+        public SoundCue Play(string[] names, string categoryName, bool isLooped = false)
         {
-            return Play(names, null, 0f, 0f, categoryName);
+            return Play(names, null, 0f, 0f, categoryName, isLooped);
         }
-        public SoundCue Play(string name)
+        public SoundCue Play(string name, bool isLooped = false)
         {
-            return Play(new[] {name});
+            return Play(new[] {name}, isLooped);
         }
-        public SoundCue Play(string name, Transform parent)
+        public SoundCue Play(string name, Transform parent, bool isLooped = false)
         {
-            return Play(new[] {name}, parent);
+            return Play(new[] {name}, parent, isLooped);
         }
-        public SoundCue Play(string name, Transform parent, string categoryName)
+        public SoundCue Play(string name, Transform parent, string categoryName, bool isLooped = false)
         {
-            return Play(new [] {name}, parent, categoryName);
+            return Play(new [] {name}, parent, categoryName, isLooped);
         }
-        public SoundCue Play(string name, Transform parent, float fadeInTime, float fadeOutTime = 0f)
+        public SoundCue Play(string name, Transform parent, float fadeInTime, float fadeOutTime = 0f, bool isLooped = false)
         {
-            return Play(new [] {name}, parent, fadeInTime, fadeOutTime);
+            return Play(new [] {name}, parent, fadeInTime, fadeOutTime, isLooped);
         }
-        public SoundCue Play(string name, string categoryName = null)
+        public SoundCue Play(string name, string categoryName = null, bool isLooped = false)
         {
-            return Play(new[] { name }, categoryName);
+            return Play(new[] { name }, categoryName, isLooped);
         }
-        public SoundCue Play(string name, float fadeInTime = 0, float fadeOutTime = 0f)
+        public SoundCue Play(string name, float fadeInTime = 0, float fadeOutTime = 0f, bool isLooped = false)
         {
-            return Play(new[] { name }, fadeInTime, fadeOutTime);
+            return Play(new[] { name }, fadeInTime, fadeOutTime, isLooped);
         }
 
         /// <summary>
@@ -92,7 +92,7 @@ namespace OSSC
         /// <param name="fadeOutTime">time to fade out volume.</param>
         /// <param name="categoryName">filter sounds by a category.</param>
         /// <returns>A soundCue which can be subscribed to it's events.</returns>
-        public SoundCue Play(string[] names, Transform parent = null, float fadeInTime = 0f, float fadeOutTime = 0f, string categoryName = null)
+        public SoundCue Play(string[] names, Transform parent = null, float fadeInTime = 0f, float fadeOutTime = 0f, string categoryName = null, bool isLooped = false)
         {
             UnityEngine.Assertions.Assert.IsNotNull(names, "[AudioController] names cannot be null");
             if (names != null)
@@ -170,6 +170,7 @@ namespace OSSC
             data.fadeOutTime = fadeOutTime;
             data.isFadeIn = data.fadeInTime >= 0.1f;
             data.isFadeOut = data.fadeOutTime >= 0.1f;
+            data.isLooped = isLooped;
             cue.audioObject = _pool.GetFreeObject(prefab).GetComponent<SoundObject>();
             if (parent != null)
                 cue.audioObject.transform.SetParent(parent, false);
@@ -183,17 +184,17 @@ namespace OSSC
         /// </summary>
         /// <param name="cue">AudioCue to clone and play.</param>
         /// <returns>Cloned AudioCue.</returns>
-        public SoundCue Play(SoundCue cue)
+        public SoundCue Play(SoundCue cue, bool isLooped = false)
         {
-            return Play(cue, null);
+            return Play(cue, null, isLooped);
         }
 
-        public SoundCue Play(SoundCue cue, Transform parent)
+        public SoundCue Play(SoundCue cue, Transform parent, bool isLooped = false)
         {
-            return Play(cue, parent, 0f);
+            return Play(cue, parent, 0f, 0f, isLooped);
         }
 
-        public SoundCue Play(SoundCue cue, Transform parent, float fadeInTime, float fadeOutTime = 0f)
+        public SoundCue Play(SoundCue cue, Transform parent, float fadeInTime, float fadeOutTime = 0f, bool isLooped = false)
         {
             var ncue = new SoundCue();
             ncue.audioObject = _pool.GetFreeObject(cue.data.audioPrefab).GetComponent<SoundObject>();
@@ -204,6 +205,7 @@ namespace OSSC
             data.fadeOutTime = fadeOutTime;
             data.isFadeIn = data.fadeInTime >= 0.1f;
             data.isFadeOut = data.fadeOutTime >= 0.1f;
+            data.isLooped = isLooped;
             ncue.Play(data);
             return ncue;
         }
@@ -214,7 +216,7 @@ namespace OSSC
         [ContextMenu("Play test1")]
         private void TestPlay()
         {
-            Play("test1", 2f, 3f);
+            Play("test1", true);
         }
         #endregion
 
