@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Audio;
 
 namespace OSSC
 {
@@ -47,7 +48,7 @@ namespace OSSC
             get { return _id; }
         }
 
-        public void Setup(string id, AudioClip clip, float volume, float fadeInTime = 0f, float fadeOutTime = 0f)
+        public void Setup(string id, AudioClip clip, float volume, float fadeInTime = 0f, float fadeOutTime = 0f, AudioMixerGroup mixer = null)
         {
             _id = id;
             _clip = clip;
@@ -57,6 +58,7 @@ namespace OSSC
 
             _source.volume = 0;
             _source.time = 0f;
+            _source.outputAudioMixerGroup = mixer;
             _volume = volume;
             _fadeInTime = fadeInTime;
             _fadeOutTime = fadeOutTime;

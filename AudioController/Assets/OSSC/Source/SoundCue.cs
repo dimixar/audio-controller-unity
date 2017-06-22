@@ -110,13 +110,19 @@ namespace OSSC
             float realVolume = _data.sounds[_currentItem].volume * _data.categoryVolumes[_currentItem];
             if (_currentItem == _data.sounds.Length - 1)
             {
-                audioObject.Setup(_data.sounds[_currentItem].name, _data.sounds[_currentItem].clip, realVolume, _data.fadeInTime, _data.fadeOutTime);
+                audioObject.Setup(_data.sounds[_currentItem].name, GetRandomClip( _data.sounds[_currentItem].clips ), realVolume, _data.fadeInTime, _data.fadeOutTime, _data.sounds[_currentItem].mixer);
             }
             else
             {
-                audioObject.Setup(_data.sounds[_currentItem].name, _data.sounds[_currentItem].clip, realVolume);
+                audioObject.Setup(_data.sounds[_currentItem].name, GetRandomClip( _data.sounds[_currentItem].clips ), realVolume, mixer:_data.sounds[_currentItem].mixer);
             }
             audioObject.Play();
+        }
+
+        private AudioClip GetRandomClip(AudioClip[] clips)
+        {
+            int index = UnityEngine.Random.Range(0, clips.Length);
+            return clips[index];
         }
     }
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using OSSC.Model;
+using UnityEngine.Audio;
 
 namespace OSSC.Editor
 {
@@ -222,12 +223,34 @@ namespace OSSC.Editor
         {
             EditorGUILayout.BeginVertical(EditorStyles.helpBox);
             item.name = EditorGUILayout.TextField("Name", item.name);
-            item.clip = (AudioClip)EditorGUILayout.ObjectField("Audio Clip", item.clip, typeof(AudioClip), false);
+
+            item.mixer = (AudioMixerGroup)EditorGUILayout.ObjectField("Mixer", item.mixer, typeof(AudioMixerGroup), false);
+            if (item.clips == null)
+            {
+                item.clips = new AudioClip[1];
+            }
+            int size = item.clips.Length;
+            size = EditorGUILayout.IntField("Size", size);
+            if (size != item.clips.Length)
+            {
+                var newClips = new AudioClip[size];
+                for (int i = 0; i < item.clips.Length; i++)
+                {
+                    if (i >= size)
+                        break;
+                    newClips[i] = item.clips[i];
+                }
+                item.clips = newClips;
+            }
+            for (int i = 0; i < item.clips.Length; i++)
+            {
+                item.clips[i] = (AudioClip)EditorGUILayout.ObjectField(item.clips[i], typeof(AudioClip), false);
+            }
             item.volume = EditorGUILayout.Slider("Volume", item.volume, 0f, 1f);
             string nameAbv = "";
             if (string.IsNullOrEmpty(item.name) == false)
                 nameAbv = item.name.Length > NAME_ABV_LEN? item.name.Substring(0, NAME_ABV_LEN) : item.name;
-            if (GUILayout.Button("Delete " + nameAbv))
+            if (GUILayout.Button("Delete Item " + nameAbv))
             {
                 DeleteSoundItem(index, items);
             }
