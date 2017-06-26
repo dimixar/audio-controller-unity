@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEditor;
 using OSSC.Model;
 
 namespace OSSC
@@ -24,7 +23,7 @@ namespace OSSC
 
         public string _dbName;
 
-        public AudioControllerData _database;
+        public SoundControllerData _database;
 
         public GameObject defaultPrefab
         {
@@ -48,7 +47,7 @@ namespace OSSC
         }
         public SoundCue Play(string[] names, float fadeInTime = 0, float fadeOutTime = 0f, bool isLooped = false)
         {
-            return Play(names, null, fadeInTime, fadeOutTime, isLooped);
+            return Play(names, null, fadeInTime, fadeOutTime, null, isLooped);
         }
         public SoundCue Play(string[] names, Transform parent, float fadeInTime, float fadeOutTime = 0f, bool isLooped = false)
         {
@@ -57,6 +56,10 @@ namespace OSSC
         public SoundCue Play(string[] names, string categoryName, bool isLooped = false)
         {
             return Play(names, null, 0f, 0f, categoryName, isLooped);
+        }
+        public SoundCue Play(string[] names, string categoryName, float fadeInTime, float fadeOutTime = 0f, bool isLooped = false)
+        {
+            return Play(names, null, fadeInTime, fadeOutTime, categoryName, isLooped);
         }
         public SoundCue Play(string name, bool isLooped = false)
         {
@@ -77,6 +80,10 @@ namespace OSSC
         public SoundCue Play(string name, string categoryName = null, bool isLooped = false)
         {
             return Play(new[] { name }, categoryName, isLooped);
+        }
+        public SoundCue Play(string name, string categoryName, float fadeInTime, float fadeOutTime = 0f, bool isLooped = false)
+        {
+            return Play(new[] { name }, categoryName, fadeInTime, fadeOutTime, isLooped);
         }
         public SoundCue Play(string name, float fadeInTime = 0, float fadeOutTime = 0f, bool isLooped = false)
         {
@@ -110,7 +117,7 @@ namespace OSSC
                     return item.name == categoryName;
                 });
 
-                Debug.Log(category);
+                // Debug.Log(category);
                 if (category == null)
                     return null;
 

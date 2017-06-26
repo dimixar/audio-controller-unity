@@ -52,12 +52,12 @@ namespace OSSC.Editor
 
             if (_ac._database == null)
             {
-                AudioControllerData db = AssetDatabase.LoadAssetAtPath<AudioControllerData>(_ac._dbName);
+                SoundControllerData db = AssetDatabase.LoadAssetAtPath<SoundControllerData>(_ac._dbName);
                 if (db == null)
                 {
                     if (GUILayout.Button("Create Database"))
                     {
-                        var asset = ScriptableObject.CreateInstance<AudioControllerData>();
+                        var asset = ScriptableObject.CreateInstance<SoundControllerData>();
                         AssetDatabase.CreateAsset(asset, _ac._dbName);
 
                         AssetDatabase.SaveAssets();
@@ -108,7 +108,7 @@ namespace OSSC.Editor
             DrawCategories(_ac._database);
         }
 
-        private void DrawCategories(Model.AudioControllerData db)
+        private void DrawCategories(Model.SoundControllerData db)
         {
 
             if (db.items == null)

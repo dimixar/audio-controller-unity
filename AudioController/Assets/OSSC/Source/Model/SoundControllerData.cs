@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace OSSC.Model
 {
-    public class AudioControllerData : ScriptableObject
+    public class SoundControllerData : ScriptableObject
     {
         public CategoryItem[] items;
         public bool foldOutCategories = false;

@@ -19,10 +19,16 @@ namespace OSSC
         /// <summary>
         /// Called when the whole cue finished playing;
         /// </summary>
-        public Action OnPlayCueEnded;
+        public Action<SoundCue> OnPlayCueEnded;
         public SoundObject audioObject;
 
         public SoundCueData data { get { return _data; } }
+
+        public bool IsPlaying
+        {
+            get;
+            private set;
+        }
 
         private int _currentItem = 0;
         private bool _isUsable = true;
@@ -37,9 +43,10 @@ namespace OSSC
             _data = data;
             UnityEngine.Assertions.Assert.IsTrue(_isUsable, "[AudioCue] AudioCue cannot be reused!!!");
             audioObject.OnFinishedPlaying = OnFinishedPlaying_handler;
-            audioObject.isDespawnOnFinishedPlaying = false;
+            // audioObject.isDespawnOnFinishedPlaying = false;
             PlayCurrentItem();
             _currentItem += 1;
+            IsPlaying = true;
         }
 
         /// <summary>
@@ -60,20 +67,23 @@ namespace OSSC
             audioObject.Resume();
         }
 
-        public void Stop(bool shouldCallOnFinishedCue = false)
+        public void Stop(bool shouldCallOnFinishedCue = true)
         {
+            if (IsPlaying == false)
+                return;
             audioObject.OnFinishedPlaying = null;
-            ((IPoolable)audioObject).pool.Despawn(audioObject.gameObject);
-            audioObject.isDespawnOnFinishedPlaying = true;
+            // ((IPoolable)audioObject).pool.Despawn(audioObject.gameObject);
+            audioObject.Stop();
             audioObject = null;
             _currentItem = 0;
             _isUsable = false;
+            IsPlaying = false;
 
             if (shouldCallOnFinishedCue == false)
                 return;
 
             if (OnPlayCueEnded != null) {
-                OnPlayCueEnded();
+                OnPlayCueEnded(this);
             }
         }
 

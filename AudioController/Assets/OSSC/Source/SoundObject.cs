@@ -25,11 +25,13 @@ namespace OSSC
         private float _fadeInTime;
         private float _fadeOutTime;
         private float _volume;
+        private bool _isDespawnOnFinishedPlaying = true;
         #endregion
 
         #region Public methods and properties
         public bool isDespawnOnFinishedPlaying {
-            get; set;
+            get { return _isDespawnOnFinishedPlaying; }
+            set { _isDespawnOnFinishedPlaying = value; }
         }
         public string clipName
         {
@@ -69,6 +71,7 @@ namespace OSSC
             if (_source == null)
                 _source = GetComponent<AudioSource>();
             _source.clip = _clip;
+            gameObject.SetActive(true);
             StartCoroutine(FadeRoutine(_fadeInTime, _volume));
             _source.Play();
             _isFree = false;
@@ -96,7 +99,7 @@ namespace OSSC
             if (_playingRoutine == null)
                 return;
 
-            _source.Stop();
+            StartCoroutine(StopRoutine());
         }
 
         [ContextMenu("Test Play")]
@@ -128,8 +131,22 @@ namespace OSSC
 
         private IEnumerator StopRoutine()
         {
+            StopCoroutine(_playingRoutine);
             yield return StartCoroutine(FadeRoutine(_fadeOutTime, 0f));
             _source.Stop();
+            _source.clip = null;
+            _playingRoutine = null;
+            _isFree = true;
+            _volume = 0f;
+            _source.time = 0f;
+
+            if (isDespawnOnFinishedPlaying)
+                _pool.Despawn(gameObject);
+
+            if (OnFinishedPlaying != null)
+            {
+                OnFinishedPlaying(this);
+            }
         }
 
         private IEnumerator PlayingRoutine()
