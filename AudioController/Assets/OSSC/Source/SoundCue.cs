@@ -20,14 +20,39 @@ namespace OSSC
         /// Called when the whole cue finished playing;
         /// </summary>
         public Action<SoundCue> OnPlayCueEnded;
-        public SoundObject audioObject;
 
-        public SoundCueData data { get { return _data; } }
+        /// <summary>
+        /// Called whenever the sound cue has finished playing or was stopped
+        /// </summary>
+        public Action<SoundCue> OnPlayKilled;
+
+        public SoundObject AudioObject;
+
+        public SoundCueData Data { get { return _data; } }
 
         public bool IsPlaying
         {
             get;
             private set;
+        }
+
+        /// <summary>
+        /// SoundCue's unique ID given by the manager
+        /// </summary>
+        /// <returns></returns>
+        public int ID
+        {
+            get;
+            private set;
+        }
+
+        public SoundCue()
+        {
+        }
+
+        public SoundCue(int id)
+        {
+            ID = id;
         }
 
         private int _currentItem = 0;
@@ -42,7 +67,7 @@ namespace OSSC
         {
             _data = data;
             UnityEngine.Assertions.Assert.IsTrue(_isUsable, "[AudioCue] AudioCue cannot be reused!!!");
-            audioObject.OnFinishedPlaying = OnFinishedPlaying_handler;
+            AudioObject.OnFinishedPlaying = OnFinishedPlaying_handler;
             // audioObject.isDespawnOnFinishedPlaying = false;
             PlayCurrentItem();
             _currentItem += 1;
@@ -55,7 +80,7 @@ namespace OSSC
         public void Pause()
         {
             UnityEngine.Assertions.Assert.IsTrue(_currentItem > 0, "[AudioCue] Cannot pause when not even started.");
-            audioObject.Pause();
+            AudioObject.Pause();
         }
 
         /// <summary>
@@ -64,26 +89,32 @@ namespace OSSC
         public void Resume()
         {
             UnityEngine.Assertions.Assert.IsTrue(_currentItem > 0, "[AudioCue] Cannot resume when not even started.");
-            audioObject.Resume();
+            AudioObject.Resume();
         }
 
         public void Stop(bool shouldCallOnFinishedCue = true)
         {
             if (IsPlaying == false)
                 return;
-            audioObject.OnFinishedPlaying = null;
+            AudioObject.OnFinishedPlaying = null;
             // ((IPoolable)audioObject).pool.Despawn(audioObject.gameObject);
-            audioObject.Stop();
-            audioObject = null;
+            AudioObject.Stop();
+            AudioObject = null;
             _currentItem = 0;
             _isUsable = false;
             IsPlaying = false;
 
-            if (shouldCallOnFinishedCue == false)
-                return;
+            if (shouldCallOnFinishedCue)
+            {
+                if (OnPlayCueEnded != null)
+                {
+                    OnPlayCueEnded(this);
+                }
+            }
 
-            if (OnPlayCueEnded != null) {
-                OnPlayCueEnded(this);
+            if (OnPlayKilled != null)
+            {
+                OnPlayKilled(this);
             }
         }
 
@@ -120,13 +151,13 @@ namespace OSSC
             float realVolume = _data.sounds[_currentItem].volume * _data.categoryVolumes[_currentItem];
             if (_currentItem == _data.sounds.Length - 1)
             {
-                audioObject.Setup(_data.sounds[_currentItem].name, GetRandomClip( _data.sounds[_currentItem].clips ), realVolume, _data.fadeInTime, _data.fadeOutTime, _data.sounds[_currentItem].mixer);
+                AudioObject.Setup(_data.sounds[_currentItem].name, GetRandomClip( _data.sounds[_currentItem].clips ), realVolume, _data.fadeInTime, _data.fadeOutTime, _data.sounds[_currentItem].mixer);
             }
             else
             {
-                audioObject.Setup(_data.sounds[_currentItem].name, GetRandomClip( _data.sounds[_currentItem].clips ), realVolume, mixer:_data.sounds[_currentItem].mixer);
+                AudioObject.Setup(_data.sounds[_currentItem].name, GetRandomClip( _data.sounds[_currentItem].clips ), realVolume, mixer:_data.sounds[_currentItem].mixer);
             }
-            audioObject.Play();
+            AudioObject.Play();
         }
 
         private AudioClip GetRandomClip(AudioClip[] clips)

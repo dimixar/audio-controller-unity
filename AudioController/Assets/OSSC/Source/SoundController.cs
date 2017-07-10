@@ -10,16 +10,22 @@ namespace OSSC
     {
         #region Serialized Data
         public GameObject _defaultPrefab;
+        private int _initialCueManagerSize = 10;
 
         #endregion
 
         #region Private fields
 
         private ObjectPool _pool;
+        private CueManager _cueManager;
 
         #endregion
 
         #region Public methods and properties
+        public CueManager CueManager
+        {
+            get { return _cueManager; }
+        }
 
         public string _dbName;
 
@@ -168,7 +174,7 @@ namespace OSSC
             if (items.Count == 0)
                 return null;
 
-            SoundCue cue = new SoundCue();
+            SoundCue cue = _cueManager.GetSoundCue();
             SoundCueData data;
             data.audioPrefab = prefab;
             data.sounds = items.ToArray();
@@ -178,9 +184,9 @@ namespace OSSC
             data.isFadeIn = data.fadeInTime >= 0.1f;
             data.isFadeOut = data.fadeOutTime >= 0.1f;
             data.isLooped = isLooped;
-            cue.audioObject = _pool.GetFreeObject(prefab).GetComponent<SoundObject>();
+            cue.AudioObject = _pool.GetFreeObject(prefab).GetComponent<SoundObject>();
             if (parent != null)
-                cue.audioObject.transform.SetParent(parent, false);
+                cue.AudioObject.transform.SetParent(parent, false);
             cue.Play(data);
 
             return cue;
@@ -203,11 +209,11 @@ namespace OSSC
 
         public SoundCue Play(SoundCue cue, Transform parent, float fadeInTime, float fadeOutTime = 0f, bool isLooped = false)
         {
-            var ncue = new SoundCue();
-            ncue.audioObject = _pool.GetFreeObject(cue.data.audioPrefab).GetComponent<SoundObject>();
+            var ncue = _cueManager.GetSoundCue();
+            ncue.AudioObject = _pool.GetFreeObject(cue.Data.audioPrefab).GetComponent<SoundObject>();
             if (parent != null)
-                ncue.audioObject.transform.SetParent(parent, false);
-            SoundCueData data = cue.data;
+                ncue.AudioObject.transform.SetParent(parent, false);
+            SoundCueData data = cue.Data;
             data.fadeInTime = fadeInTime;
             data.fadeOutTime = fadeOutTime;
             data.isFadeIn = data.fadeInTime >= 0.1f;
@@ -232,6 +238,7 @@ namespace OSSC
         void Awake()
         {
             _pool = GetComponent<ObjectPool>();
+            _cueManager = new CueManager(_initialCueManagerSize);
         }
 
         #endregion
