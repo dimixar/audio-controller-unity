@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using OSSC.Model;
@@ -100,6 +100,18 @@ namespace OSSC
         {
             _cueManager.StopAllCues(shouldCallOnEndCallback);
         }
+
+        public void SetMute(string categoryName, bool value)
+        {
+            for (int i = 0; i < _database.items.Length; i++)
+            {
+                if (_database.items[i].name == categoryName)
+                {
+                    _database.items[i].isMute = value;
+                }
+            }
+        }
+
         /// <summary>
         /// Creates a SoundCue and plays it.
         /// </summary>
@@ -139,7 +151,7 @@ namespace OSSC
                         return x.name == names[i];
                     });
 
-                    if (item != null)
+                    if (item != null && category.isMute == false)
                     {
                         catVolumes.Add(category.categoryVolume);
                         items.Add(item);
@@ -164,7 +176,7 @@ namespace OSSC
                     for (int j = 0; j < categoryItems.Length; j++)
                     {
                         item = System.Array.Find(categoryItems[j].soundItems, (x) => x.name == names[i]);
-                        if (item != null)
+                        if (item != null && categoryItems[j].isMute == false)
                         {
                             catVolumes.Add(categoryItems[j].categoryVolume);
                             break;

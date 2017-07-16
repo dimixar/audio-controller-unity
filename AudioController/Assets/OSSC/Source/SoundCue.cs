@@ -129,7 +129,6 @@ namespace OSSC
             {
                 PlayCurrentItem();
                 _currentItem += 1;
-
             }
             else
             {

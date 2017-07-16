@@ -17,6 +17,7 @@ namespace OSSC.Model
 
         public bool foldOutSoundItems = false;
         public string soundsSearchName = "";
+        public bool isMute = false;
     }
 
 }
