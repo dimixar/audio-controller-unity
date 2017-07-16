@@ -7,6 +7,9 @@ using UnityEngine.Audio;
 
 namespace OSSC.Editor
 {
+    //TODO: Add some basic cueManager info.
+    //*** Ex: playing sound cues, free soundCues,
+    //*** Ex: current data contained into some soundCues.
     [CustomEditor(typeof(SoundController))]
     public class SoundControllerEditor : UnityEditor.Editor
     {
