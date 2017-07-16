@@ -26,6 +26,15 @@ namespace OSSC
             cue.OnPlayKilled += OnPlayKilled_handler;
             return FindFreeCue();
         }
+
+        public void StopAllCues(bool shouldCallOnEndCallback = true)
+        {
+            for (int i = 0; i < _soundCues.Count; i++)
+            {
+                if (_soundCues[i].IsPlaying)
+                    _soundCues[i].Stop(shouldCallOnEndCallback);
+            }
+        }
         #endregion
 
         #region Private methods

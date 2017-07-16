@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using OSSC.Model;
@@ -96,6 +96,10 @@ namespace OSSC
             return Play(new[] { name }, fadeInTime, fadeOutTime, isLooped);
         }
 
+        public void StopAll(bool shouldCallOnEndCallback = true)
+        {
+            _cueManager.StopAllCues(shouldCallOnEndCallback);
+        }
         /// <summary>
         /// Creates a SoundCue and plays it.
         /// </summary>
