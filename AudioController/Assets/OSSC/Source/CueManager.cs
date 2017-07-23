@@ -38,12 +38,13 @@ namespace OSSC
         #endregion
 
         #region Private methods
-        private void OnPlayKilled_handler(SoundCue cue)
+        private void OnPlayKilled_handler(SoundCue cue, SoundCueProxy proxy)
         {
             //NOTE: Clear up any references to events.
             cue.OnPlayKilled = null;
             cue.OnPlayCueEnded = null;
             cue.OnPlayEnded = null;
+            proxy.SoundCue = null;
         }
 
         /// <summary>

@@ -9,24 +9,24 @@ namespace OSSC
     /// <summary>
     /// Plays a whole cue of soundItems
     /// </summary>
-    public class SoundCue
+    public class SoundCue : ISoundCue
     {
         /// <summary>
         /// Called on every sound item that has ended playing;
         /// /// </summary>
-        public Action<string> OnPlayEnded;
+        public Action<string> OnPlayEnded { get; set; }
 
         /// <summary>
         /// Called when the whole cue finished playing;
         /// </summary>
-        public Action<SoundCue> OnPlayCueEnded;
+        public Action<SoundCue> OnPlayCueEnded { get; set; }
 
         /// <summary>
         /// Called whenever the sound cue has finished playing or was stopped
         /// </summary>
-        public Action<SoundCue> OnPlayKilled;
+        public Action<SoundCue, SoundCueProxy> OnPlayKilled { get; set; }
 
-        public SoundObject AudioObject;
+        public SoundObject AudioObject { get; set; }
 
         public SoundCueData Data { get { return _data; } }
 
@@ -56,8 +56,8 @@ namespace OSSC
         }
 
         private int _currentItem = 0;
-        private bool _isUsable = true;
         private SoundCueData _data;
+        private SoundCueProxy _currentProxy;
 
         /// <summary>
         /// Will start playing the cue.
@@ -66,12 +66,17 @@ namespace OSSC
         public void Play(SoundCueData data)
         {
             _data = data;
-            UnityEngine.Assertions.Assert.IsTrue(_isUsable, "[AudioCue] AudioCue cannot be reused!!!");
             AudioObject.OnFinishedPlaying = OnFinishedPlaying_handler;
             // audioObject.isDespawnOnFinishedPlaying = false;
             PlayCurrentItem();
             _currentItem += 1;
             IsPlaying = true;
+        }
+
+        public void Play(SoundCueData data, SoundCueProxy proxy)
+        {
+            Play(data);
+            _currentProxy = proxy;
         }
 
         /// <summary>
@@ -101,7 +106,6 @@ namespace OSSC
             AudioObject.Stop();
             AudioObject = null;
             _currentItem = 0;
-            _isUsable = false;
             IsPlaying = false;
 
             if (shouldCallOnFinishedCue)
@@ -114,7 +118,8 @@ namespace OSSC
 
             if (OnPlayKilled != null)
             {
-                OnPlayKilled(this);
+                OnPlayKilled(this, _currentProxy);
+                _currentProxy = null;
             }
         }
 
@@ -172,6 +177,7 @@ namespace OSSC
     public struct SoundCueData
     {
         public SoundItem[] sounds;
+        public CategoryItem[] categoriesForSounds;
         public float[] categoryVolumes;
         public GameObject audioPrefab;
         public float fadeInTime;

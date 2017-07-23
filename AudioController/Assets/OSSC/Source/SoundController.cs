@@ -39,63 +39,6 @@ namespace OSSC
             }
         }
 
-        public SoundCue Play(string[] names, bool isLooped = false)
-        {
-            return Play(names, (Transform)(null), isLooped);
-        }
-        public SoundCue Play(string[] names, Transform parent, bool isLooped = false)
-        {
-            return Play(names, parent, null, isLooped);
-        }
-        public SoundCue Play(string[] names, Transform parent, string categoryName, bool isLooped = false)
-        {
-            return Play(names, parent, 0f, 0f, categoryName, isLooped);
-        }
-        public SoundCue Play(string[] names, float fadeInTime = 0, float fadeOutTime = 0f, bool isLooped = false)
-        {
-            return Play(names, null, fadeInTime, fadeOutTime, null, isLooped);
-        }
-        public SoundCue Play(string[] names, Transform parent, float fadeInTime, float fadeOutTime = 0f, bool isLooped = false)
-        {
-            return Play(names, parent, fadeInTime, fadeOutTime, null, isLooped);
-        }
-        public SoundCue Play(string[] names, string categoryName, bool isLooped = false)
-        {
-            return Play(names, null, 0f, 0f, categoryName, isLooped);
-        }
-        public SoundCue Play(string[] names, string categoryName, float fadeInTime, float fadeOutTime = 0f, bool isLooped = false)
-        {
-            return Play(names, null, fadeInTime, fadeOutTime, categoryName, isLooped);
-        }
-        public SoundCue Play(string name, bool isLooped = false)
-        {
-            return Play(new[] {name}, isLooped);
-        }
-        public SoundCue Play(string name, Transform parent, bool isLooped = false)
-        {
-            return Play(new[] {name}, parent, isLooped);
-        }
-        public SoundCue Play(string name, Transform parent, string categoryName, bool isLooped = false)
-        {
-            return Play(new [] {name}, parent, categoryName, isLooped);
-        }
-        public SoundCue Play(string name, Transform parent, float fadeInTime, float fadeOutTime = 0f, bool isLooped = false)
-        {
-            return Play(new [] {name}, parent, fadeInTime, fadeOutTime, isLooped);
-        }
-        public SoundCue Play(string name, string categoryName = null, bool isLooped = false)
-        {
-            return Play(new[] { name }, categoryName, isLooped);
-        }
-        public SoundCue Play(string name, string categoryName, float fadeInTime, float fadeOutTime = 0f, bool isLooped = false)
-        {
-            return Play(new[] { name }, categoryName, fadeInTime, fadeOutTime, isLooped);
-        }
-        public SoundCue Play(string name, float fadeInTime = 0, float fadeOutTime = 0f, bool isLooped = false)
-        {
-            return Play(new[] { name }, fadeInTime, fadeOutTime, isLooped);
-        }
-
         public void StopAll(bool shouldCallOnEndCallback = true)
         {
             _cueManager.StopAllCues(shouldCallOnEndCallback);
@@ -121,8 +64,33 @@ namespace OSSC
         /// <param name="fadeOutTime">time to fade out volume.</param>
         /// <param name="categoryName">filter sounds by a category.</param>
         /// <returns>A soundCue which can be subscribed to it's events.</returns>
-        public SoundCue Play(string[] names, Transform parent = null, float fadeInTime = 0f, float fadeOutTime = 0f, string categoryName = null, bool isLooped = false)
+        public SoundCueProxy Play(PlaySoundSettings settings)
         {
+            if (settings.soundCueProxy != null)
+            {
+                return PlaySoundCue(settings);
+            }
+
+            if (settings.names == null && string.IsNullOrEmpty(settings.name))
+            {
+                return null;
+            }
+
+            string[] names = null;
+            string categoryName = settings.categoryName;
+            float fadeInTime = settings.fadeInTime;
+            float fadeOutTime = settings.fadeOutTime;
+            bool isLooped = settings.isLooped;
+            Transform parent = settings.parent;
+
+            if (settings.names != null)
+            {
+                names = settings.names;
+            }
+            else
+            {
+                names = new[] { settings.name };
+            }
             UnityEngine.Assertions.Assert.IsNotNull(names, "[AudioController] names cannot be null");
             if (names != null)
                 UnityEngine.Assertions.Assert.IsFalse(names.Length == 0, "[AudioController] names cannot have 0 strings");
@@ -131,6 +99,7 @@ namespace OSSC
             GameObject prefab = null;
             List<SoundItem> items = new List<SoundItem>();
             List<float> catVolumes = new List<float>();
+            List<CategoryItem> categories = new List<CategoryItem>();
 
             if (string.IsNullOrEmpty(categoryName) == false)
             {
@@ -155,6 +124,7 @@ namespace OSSC
                     {
                         catVolumes.Add(category.categoryVolume);
                         items.Add(item);
+                        categories.Add(category);
                     }
                 }
             }
@@ -169,6 +139,7 @@ namespace OSSC
                     if (item != null)
                     {
                         catVolumes.Add(catVolumes[items.IndexOf(item)]);
+                        categories.Add(categories[items.IndexOf(item)]);
                         items.Add(item);
                         continue;
                     }
@@ -179,6 +150,7 @@ namespace OSSC
                         if (item != null && categoryItems[j].isMute == false)
                         {
                             catVolumes.Add(categoryItems[j].categoryVolume);
+                            categories.Add(categoryItems[j]);
                             break;
                         }
                     }
@@ -195,6 +167,7 @@ namespace OSSC
             data.audioPrefab = prefab;
             data.sounds = items.ToArray();
             data.categoryVolumes = catVolumes.ToArray();
+            data.categoriesForSounds = categories.ToArray();
             data.fadeInTime = fadeInTime;
             data.fadeOutTime = fadeOutTime;
             data.isFadeIn = data.fadeInTime >= 0.1f;
@@ -203,28 +176,24 @@ namespace OSSC
             cue.AudioObject = _pool.GetFreeObject(prefab).GetComponent<SoundObject>();
             if (parent != null)
                 cue.AudioObject.transform.SetParent(parent, false);
-            cue.Play(data);
 
-            return cue;
+            SoundCueProxy proxy = new SoundCueProxy();
+            proxy.SoundCue = cue;
+            proxy.Play(data);
+            return proxy;
         }
 
-        /// <summary>
-        /// Creates a new copy of the AudioCue and plays it.
-        /// </summary>
-        /// <param name="cue">AudioCue to clone and play.</param>
-        /// <returns>Cloned AudioCue.</returns>
-        public SoundCue Play(SoundCue cue, bool isLooped = false)
-        {
-            return Play(cue, null, isLooped);
-        }
 
-        public SoundCue Play(SoundCue cue, Transform parent, bool isLooped = false)
-        {
-            return Play(cue, parent, 0f, 0f, isLooped);
-        }
+        #endregion
 
-        public SoundCue Play(SoundCue cue, Transform parent, float fadeInTime, float fadeOutTime = 0f, bool isLooped = false)
+        #region Private methods
+        private SoundCueProxy PlaySoundCue(PlaySoundSettings settings)
         {
+            SoundCueProxy cue = settings.soundCueProxy;
+            Transform parent = settings.parent;
+            float fadeInTime = settings.fadeInTime;
+            float fadeOutTime = settings.fadeOutTime;
+            bool isLooped = settings.isLooped;
             var ncue = _cueManager.GetSoundCue();
             ncue.AudioObject = _pool.GetFreeObject(cue.Data.audioPrefab).GetComponent<SoundObject>();
             if (parent != null)
@@ -235,17 +204,19 @@ namespace OSSC
             data.isFadeIn = data.fadeInTime >= 0.1f;
             data.isFadeOut = data.fadeOutTime >= 0.1f;
             data.isLooped = isLooped;
-            ncue.Play(data);
-            return ncue;
+            cue.SoundCue = ncue;
+            cue.Play(data);
+            return cue;
         }
 
-        #endregion
-
-        #region Private methods
-        [ContextMenu("Play test1")]
-        private void TestPlay()
+        [ContextMenu("Test play")]
+        void Test()
         {
-            Play("test1", true);
+            PlaySoundSettings settings = new PlaySoundSettings();
+            settings.Init();
+            settings.name = "Test";
+            var proxyCue = Play(settings);
+            Debug.Log(proxyCue.ID);
         }
         #endregion
 
@@ -258,6 +229,33 @@ namespace OSSC
         }
 
         #endregion
+    }
+
+    /// <summary>
+    /// Set the settings to play a particular cue with particular preferences.
+    /// </summary>
+    public struct PlaySoundSettings
+    {
+        public string name;
+        public string[] names;
+        public Transform parent;
+        public float fadeInTime;
+        public float fadeOutTime;
+        public string categoryName;
+        public bool isLooped;
+        public SoundCueProxy soundCueProxy;
+
+        public void Init()
+        {
+            name = string.Empty;
+            names = null;
+            parent = null;
+            fadeInTime = 0f;
+            fadeOutTime = 0f;
+            categoryName = string.Empty;
+            isLooped = false;
+            soundCueProxy = null;
+        }
     }
 
 }
