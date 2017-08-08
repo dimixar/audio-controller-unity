@@ -68,8 +68,10 @@ namespace OSSC
             _data = data;
             AudioObject.OnFinishedPlaying = OnFinishedPlaying_handler;
             // audioObject.isDespawnOnFinishedPlaying = false;
-            PlayCurrentItem();
-            _currentItem += 1;
+            if (TryPlayNext() == false)
+            {
+                return;
+            }
             IsPlaying = true;
         }
 
@@ -132,22 +134,52 @@ namespace OSSC
 
             if (_currentItem < _data.sounds.Length)
             {
-                PlayCurrentItem();
-                _currentItem += 1;
+                if (TryPlayNext() == false)
+                {
+                    Stop(true);
+                }
             }
             else
             {
                 if (_data.isLooped)
                 {
                     _currentItem = 0;
-                    PlayCurrentItem();
-                    _currentItem += 1;
+                    if (TryPlayNext() == false)
+                    {
+                        Stop(true);
+                    }
                 }
                 else
                 {
                     Stop(true);
                 }
             }
+        }
+
+        private bool TryPlayNext()
+        {
+            bool isPlaying = false;
+            if (_data.categoriesForSounds[_currentItem].isMute == false)
+            {
+                PlayCurrentItem();
+                _currentItem += 1;
+                isPlaying = true;
+            }
+            else
+            {
+                for (int i = _currentItem; i < _data.sounds.Length; i++)
+                {
+                    if (_data.categoriesForSounds[i].isMute == false)
+                    {
+                        _currentItem = i;
+                        PlayCurrentItem();
+                        _currentItem += 1;
+                        isPlaying = true;
+                        break;
+                    }
+                }
+            }
+            return isPlaying;
         }
 
         private void PlayCurrentItem()

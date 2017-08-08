@@ -140,6 +140,7 @@ namespace OSSC.Editor
             item.name = EditorGUILayout.TextField("Name", item.name);
             item.audioObjectPrefab = (GameObject)EditorGUILayout.ObjectField("Category AO prefab", item.audioObjectPrefab, typeof(GameObject), false);
             item.usingDefaultPrefab = item.audioObjectPrefab == null;
+            item.isMute = EditorGUILayout.Toggle("Is Mute", item.isMute);
             item.categoryVolume = EditorGUILayout.Slider("Category Volume", item.categoryVolume, 0f, 1f);
 
             EditorGUILayout.BeginHorizontal(EditorStyles.helpBox);

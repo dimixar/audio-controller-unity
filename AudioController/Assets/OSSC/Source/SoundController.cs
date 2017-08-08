@@ -151,11 +151,10 @@ namespace OSSC
                         {
                             catVolumes.Add(categoryItems[j].categoryVolume);
                             categories.Add(categoryItems[j]);
+                            items.Add(item);
                             break;
                         }
                     }
-                    if (item != null)
-                        items.Add(item);
                 }
             }
 
