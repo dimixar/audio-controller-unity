@@ -25,56 +25,15 @@ namespace OSSC.Editor
             _ac = target as SoundController;
 
             _ac._defaultPrefab = (GameObject)EditorGUILayout.ObjectField("Default AudioObject prefab", (Object)(_ac._defaultPrefab), typeof(GameObject), false);
-            if (_ac._database == null)
-            {
-                _dbName = EditorGUILayout.TextField("Asset Name", _dbName);
-                _dbPath = EditorGUILayout.TextField("Relative path", _dbPath);
-            }
-            else
-            {
-                _dbName = _ac._database.assetName;
-                _dbPath = _ac._database.relativePath;
-                EditorGUILayout.LabelField("Asset Name", _dbName, EditorStyles.largeLabel);
-                EditorGUILayout.LabelField("Relative Path", _dbPath, EditorStyles.miniBoldLabel);
-            }
-
-            string path = "Assets/" + (string.IsNullOrEmpty(_dbPath) ? "" : (_dbPath + "/")) + _dbName + ".asset";
-
-            if (string.IsNullOrEmpty(_ac._dbName))
-            {
-                _ac._dbName = path;
-            }
-            else
-            {
-                if (!string.IsNullOrEmpty(_dbPath) && !string.IsNullOrEmpty(_dbName))
-                    if ((_ac._dbName.Contains(_dbPath) && _ac._dbName.Contains(_dbName)) == false)
-                    {
-                        _ac._dbName = path;
-                    }
-            }
+            _ac._database = (SoundControllerData) EditorGUILayout.ObjectField(
+                "Data",
+                _ac._database,
+                typeof(SoundControllerData),
+                false);
 
             if (_ac._database == null)
             {
-                SoundControllerData db = AssetDatabase.LoadAssetAtPath<SoundControllerData>(_ac._dbName);
-                if (db == null)
-                {
-                    if (GUILayout.Button("Create Database"))
-                    {
-                        var asset = ScriptableObject.CreateInstance<SoundControllerData>();
-                        AssetDatabase.CreateAsset(asset, _ac._dbName);
-
-                        AssetDatabase.SaveAssets();
-                        AssetDatabase.Refresh();
-
-                        _ac._database = asset;
-                        _ac._database.relativePath = _dbPath;
-                        _ac._database.assetName = _dbName;
-                    }
-                }
-                else
-                {
-                    _ac._database = db;
-                }
+                EditorGUILayout.HelpBox("Create SoundControllerData asset, then throw it here.", MessageType.Info);
             }
             else
             {

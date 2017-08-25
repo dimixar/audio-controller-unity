@@ -58,12 +58,8 @@ namespace OSSC
         /// <summary>
         /// Creates a SoundCue and plays it.
         /// </summary>
-        /// <param name="names">array of sounds to play.</param>
-        /// <param name="parent">attaches soundObject to the transform.</param>
-        /// <param name="fadeInTime">time to fade in volume.</param>
-        /// <param name="fadeOutTime">time to fade out volume.</param>
-        /// <param name="categoryName">filter sounds by a category.</param>
-        /// <returns>A soundCue which can be subscribed to it's events.</returns>
+        /// <param name="settings">A struct which contains all data for SoundController to work</param>
+        /// <returns>A soundCue proxy which can be subscribed to it's events.</returns>
         public SoundCueProxy Play(PlaySoundSettings settings)
         {
             if (settings.soundCueProxy != null)
@@ -182,7 +178,6 @@ namespace OSSC
             return proxy;
         }
 
-
         #endregion
 
         #region Private methods
@@ -215,6 +210,54 @@ namespace OSSC
             settings.Init();
             settings.name = "Test";
             var proxyCue = Play(settings);
+            Debug.Log(proxyCue.ID);
+        }
+
+        [ContextMenu("Test Play looped")]
+        void TestLoop()
+        {
+            PlaySoundSettings settings = new PlaySoundSettings();
+            settings.Init();
+            settings.name = "Test";
+            settings.isLooped = true;
+            var proxyCue = Play(settings);
+            Debug.Log(proxyCue.ID);
+        }
+
+        [ContextMenu("Test sequence")]
+        void TestSequence()
+        {
+            PlaySoundSettings settings = new PlaySoundSettings();
+            settings.Init();
+            settings.names = new[] {"Test", "Test1", "Test2"};
+            var proxyCue = Play(settings);
+            Debug.Log(proxyCue.ID);
+        }
+
+        [ContextMenu("Test sequence looped")]
+        void TestSequenceLooped()
+        {
+            PlaySoundSettings settings = new PlaySoundSettings();
+            settings.Init();
+            settings.names = new[] {"Test", "Test1", "Test2"};
+            settings.isLooped = true;
+            var proxyCue = Play(settings);
+            Debug.Log(proxyCue.ID);
+        }
+
+        [ContextMenu("Test sequence plays 2 times")]
+        void TestSequence2TimesPlay()
+        {
+            PlaySoundSettings settings = new PlaySoundSettings();
+            settings.Init();
+            settings.names = new[] {"Test", "Test1", "Test2"};
+            var proxyCue = Play(settings);
+            proxyCue.OnPlayCueEnded += cue =>
+            {
+                var sett = new PlaySoundSettings();
+                sett.soundCueProxy = proxyCue;
+                proxyCue = Play(sett);
+            };
             Debug.Log(proxyCue.ID);
         }
         #endregion

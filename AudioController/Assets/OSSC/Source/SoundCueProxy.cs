@@ -65,7 +65,7 @@ namespace OSSC
         public bool IsPlaying
 		{
 			get {
-                return _soundCue == null ? false : _soundCue.IsPlaying;
+                return _soundCue != null && _soundCue.IsPlaying;
             }
 		}
 
