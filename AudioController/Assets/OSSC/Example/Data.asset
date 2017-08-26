@@ -1,0 +1,53 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d124957088fb4253ac0d826b09325bf, type: 3}
+  m_Name: Data
+  m_EditorClassIdentifier: 
+  items:
+  - name: SFX
+    soundItems:
+    - name: Whosh
+      mixer: {fileID: 0}
+      clips:
+      - {fileID: 8300000, guid: 104ccf2867c50ab4487cb32f7017f65d, type: 3}
+      volume: 1
+    - name: CrackingIce
+      mixer: {fileID: 0}
+      clips:
+      - {fileID: 8300000, guid: 8a4f53a9924f9e347bbf73517539d49e, type: 3}
+      volume: 1
+    - name: Coins
+      mixer: {fileID: 0}
+      clips:
+      - {fileID: 8300000, guid: 794976885e2ca9040a99e92939e551b6, type: 3}
+      - {fileID: 8300000, guid: e808de1807589284aa819d26d1ed4bf3, type: 3}
+      volume: 1
+    audioObjectPrefab: {fileID: 0}
+    usingDefaultPrefab: 1
+    categoryVolume: 1
+    foldOutSoundItems: 1
+    soundsSearchName: 
+    isMute: 0
+  - name: Music
+    soundItems:
+    - name: Ballade
+      mixer: {fileID: 0}
+      clips:
+      - {fileID: 8300000, guid: df4aeddb370124548ac3e0085b01e028, type: 3}
+      volume: 1
+    audioObjectPrefab: {fileID: 0}
+    usingDefaultPrefab: 1
+    categoryVolume: 1
+    foldOutSoundItems: 1
+    soundsSearchName: 
+    isMute: 0
+  foldOutCategories: 1
+  assetName: 
