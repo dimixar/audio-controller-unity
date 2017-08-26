@@ -10,6 +10,7 @@ namespace OSSC
     {
         #region Serialized Data
         public GameObject _defaultPrefab;
+        public SoundControllerData _database;
         private int _initialCueManagerSize = 10;
 
         #endregion
@@ -22,14 +23,6 @@ namespace OSSC
         #endregion
 
         #region Public methods and properties
-        public CueManager CueManager
-        {
-            get { return _cueManager; }
-        }
-
-        public string _dbName;
-
-        public SoundControllerData _database;
 
         public GameObject defaultPrefab
         {

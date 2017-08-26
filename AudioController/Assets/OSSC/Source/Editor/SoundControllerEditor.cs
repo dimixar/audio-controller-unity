@@ -17,19 +17,10 @@ namespace OSSC.Editor
         private SoundController _ac;
         private string categoryNameSearch = "";
 
-        private string _dbPath;
-        private string _dbName;
-
         public override void OnInspectorGUI()
         {
+            base.OnInspectorGUI();
             _ac = target as SoundController;
-
-            _ac._defaultPrefab = (GameObject)EditorGUILayout.ObjectField("Default AudioObject prefab", (Object)(_ac._defaultPrefab), typeof(GameObject), false);
-            _ac._database = (SoundControllerData) EditorGUILayout.ObjectField(
-                "Data",
-                _ac._database,
-                typeof(SoundControllerData),
-                false);
 
             if (_ac._database == null)
             {
@@ -40,8 +31,7 @@ namespace OSSC.Editor
                 DrawMain();
             }
 
-            EditorUtility.SetDirty(target);
-            EditorUtility.SetDirty(this);
+            EditorUtility.SetDirty(_ac);
             if (_ac._database != null)
                 EditorUtility.SetDirty(_ac._database);
         }
