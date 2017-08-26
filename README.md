@@ -13,7 +13,7 @@ Main Features:
 - It's not a singleton!!!
 
 How to add it to your project and scene:
-1. Extract the latest .unitypackage file found in releases;
+1. Extract the latest .unitypackage file found in releases (link here: https://github.com/dimixar/audio-controller-unity/releases/tag/0.0.1);
 2. Create new SoundControllerData asset using the contextual menu from Project hierarchy;
 3. Find the prefab with SoundController in OSSC folder and drag it onto the scene;
 4. Add your new created asset into the corresponding object field of the SoundContoller component;
