@@ -9,6 +9,7 @@ The reason I made this plugin is that I don't really want to pay money for Audio
 
 Main Features:
 - Organize sounds by categories
+- Add tags to your sounds to filter them even further
 - Add multiple variants of the same sound and easily play at random.
 - Change Audioclips, edit category names, and sound names from play mode without the fear of losing those changes
 - All data is saved on a scriptable object asset

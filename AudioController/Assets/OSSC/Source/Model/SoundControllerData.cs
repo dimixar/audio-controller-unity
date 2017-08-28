@@ -9,6 +9,8 @@ namespace OSSC.Model
     {
         public CategoryItem[] items;
         public bool foldOutCategories = false;
+        public bool foldOutTags = false;
         public string assetName;
+        public SoundTags soundTags;
     }
 }

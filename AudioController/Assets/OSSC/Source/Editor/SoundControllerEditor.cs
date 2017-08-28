@@ -1,9 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using UnityEngine;
 using UnityEditor;
 using OSSC.Model;
 using UnityEngine.Audio;
+using UnityEngine.EventSystems;
 
 namespace OSSC.Editor
 {
@@ -16,6 +18,7 @@ namespace OSSC.Editor
         private const int NAME_ABV_LEN = 50;
         private SoundController _ac;
         private string categoryNameSearch = "";
+        private string _tagName = "";
 
         public override void OnInspectorGUI()
         {
@@ -40,6 +43,7 @@ namespace OSSC.Editor
         {
             if (_ac._database == null)
                 return;
+            DrawSoundTags();
             EditorGUILayout.BeginHorizontal(EditorStyles.helpBox);
             if (GUILayout.Button("DELETE DATA"))
             {
@@ -177,6 +181,21 @@ namespace OSSC.Editor
             EditorGUILayout.BeginVertical(EditorStyles.helpBox);
             item.name = EditorGUILayout.TextField("Name", item.name);
 
+            string[] names = _ac._database.soundTags.ToArrayNames();
+            int[] ids = _ac._database.soundTags.ToArrayIDs();
+            if (ids.Length != 0)
+            {
+                int indexTag = System.Array.IndexOf(ids, item.tagID);
+                indexTag = EditorGUILayout.Popup("Tag", indexTag, names);
+                if (indexTag != -1)
+                    item.tagID = ids[indexTag];
+            }
+            else
+            {
+                item.tagID = -1;
+            }
+            
+
             item.mixer = (AudioMixerGroup)EditorGUILayout.ObjectField("Mixer", item.mixer, typeof(AudioMixerGroup), false);
             if (item.clips == null)
             {
@@ -202,7 +221,7 @@ namespace OSSC.Editor
             item.volume = EditorGUILayout.Slider("Volume", item.volume, 0f, 1f);
             string nameAbv = "";
             if (string.IsNullOrEmpty(item.name) == false)
-                nameAbv = item.name.Length > NAME_ABV_LEN? item.name.Substring(0, NAME_ABV_LEN) : item.name;
+                nameAbv = item.name.Length > NAME_ABV_LEN ? item.name.Substring(0, NAME_ABV_LEN) : item.name;
             if (GUILayout.Button("Delete Item " + nameAbv))
             {
                 DeleteSoundItem(index, items);
@@ -226,6 +245,54 @@ namespace OSSC.Editor
                 soundInd += 1;
             }
             category.soundItems = soundItems;
+        }
+
+        private void DrawSoundTags()
+        {
+            if (_ac._database.soundTags == null)
+            {
+                _ac._database.soundTags = new SoundTags();
+            }
+
+            _ac._database.foldOutTags = EditorGUILayout.Foldout(_ac._database.foldOutTags, "Tags", true);
+            if (_ac._database.foldOutTags == false)
+            {
+                EditorGUILayout.HelpBox("Add tags filter sounds by them.", MessageType.Info);
+                return;
+            }
+
+            EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+            DrawAddNewTag();
+            
+            TagData[] data = _ac._database.soundTags.ToArray();
+            for (int i = 0; i < data.Length; i++)
+            {
+                DrawSoundTag(data[i], _ac._database.soundTags);
+            }
+            EditorGUILayout.EndVertical();
+        }
+
+        private void DrawSoundTag(TagData data, SoundTags tags)
+        {
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField("ID: " + data.ID.ToString(), "name: " + data.name);
+            if (GUILayout.Button("Delete"))
+            {
+                tags.RemoveByTag(data);
+            }
+            EditorGUILayout.EndHorizontal();
+        }
+
+        private void DrawAddNewTag()
+        {
+            EditorGUILayout.BeginHorizontal(EditorStyles.helpBox);
+            _tagName = EditorGUILayout.TextField("Add Tag:", _tagName);
+            if (GUILayout.Button("Add"))
+            {
+                _ac._database.soundTags.SetTag(_tagName);
+                _tagName = string.Empty;
+            }
+            EditorGUILayout.EndHorizontal();
         }
     }
 }

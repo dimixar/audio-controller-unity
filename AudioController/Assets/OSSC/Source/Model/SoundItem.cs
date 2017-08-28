@@ -6,6 +6,7 @@ namespace OSSC.Model
     public class SoundItem
     {
         public string name;
+        public int tagID = -1;
         public UnityEngine.Audio.AudioMixerGroup mixer;
         public AudioClip[] clips;
 

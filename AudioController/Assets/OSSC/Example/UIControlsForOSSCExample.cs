@@ -13,6 +13,7 @@ public class UIControlsForOSSCExample : MonoBehaviour
     SoundCueProxy sfxCue;
     SoundCueProxy sfxCueLoop;
     SoundCueProxy music;
+    SoundCueProxy musicWithTag;
 
     public void PlayCoins()
     {
@@ -92,6 +93,17 @@ public class UIControlsForOSSCExample : MonoBehaviour
         settings.parent = transform; // Use this parent to put the AudioSource's position here.
         settings.isLooped = true;
         music = soundController.Play(settings);
+    }
+
+    public void PlayMusicWithTag()
+    {
+        PlaySoundSettings settings = new PlaySoundSettings();
+        settings.Init();
+        
+        settings.name = "Ballade";
+        settings.tagName = "classical";
+        settings.isLooped = true;
+        musicWithTag = soundController.Play(settings);
     }
 
     public void StopCoins()

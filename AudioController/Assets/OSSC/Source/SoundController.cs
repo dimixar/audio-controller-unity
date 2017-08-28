@@ -70,6 +70,7 @@ namespace OSSC
             float fadeInTime = settings.fadeInTime;
             float fadeOutTime = settings.fadeOutTime;
             bool isLooped = settings.isLooped;
+            int tagID = _database.soundTags.GetTagIDByName(settings.tagName);
             Transform parent = settings.parent;
 
             if (settings.names != null)
@@ -111,9 +112,13 @@ namespace OSSC
 
                     if (item != null && category.isMute == false)
                     {
-                        catVolumes.Add(category.categoryVolume);
-                        items.Add(item);
-                        categories.Add(category);
+                        bool canAddItem = tagID == -1 || tagID == item.tagID;
+                        if (canAddItem)
+                        {
+                            catVolumes.Add(category.categoryVolume);
+                            items.Add(item);
+                            categories.Add(category);
+                        }
                     }
                 }
             }
@@ -127,6 +132,10 @@ namespace OSSC
                     item = items.Find((x) => names[i] == x.name);
                     if (item != null)
                     {
+                        bool canAddItem = tagID == -1 || tagID == item.tagID;
+                        if (canAddItem == false)
+                            continue;
+                        
                         catVolumes.Add(catVolumes[items.IndexOf(item)]);
                         categories.Add(categories[items.IndexOf(item)]);
                         items.Add(item);
@@ -138,6 +147,9 @@ namespace OSSC
                         item = System.Array.Find(categoryItems[j].soundItems, (x) => x.name == names[i]);
                         if (item != null && categoryItems[j].isMute == false)
                         {
+                            bool canAddItem = tagID == -1 || tagID == item.tagID;
+                            if (canAddItem == false)
+                                continue;
                             catVolumes.Add(categoryItems[j].categoryVolume);
                             categories.Add(categoryItems[j]);
                             items.Add(item);
@@ -279,6 +291,7 @@ namespace OSSC
         public string categoryName;
         public bool isLooped;
         public SoundCueProxy soundCueProxy;
+        public string tagName;
 
         public void Init()
         {
@@ -290,6 +303,7 @@ namespace OSSC
             categoryName = string.Empty;
             isLooped = false;
             soundCueProxy = null;
+            tagName = string.Empty;
         }
     }
 

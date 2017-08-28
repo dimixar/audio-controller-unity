@@ -15,16 +15,19 @@ MonoBehaviour:
   - name: SFX
     soundItems:
     - name: Whosh
+      tagID: -1
       mixer: {fileID: 0}
       clips:
       - {fileID: 8300000, guid: 104ccf2867c50ab4487cb32f7017f65d, type: 3}
       volume: 1
     - name: CrackingIce
+      tagID: -1
       mixer: {fileID: 0}
       clips:
       - {fileID: 8300000, guid: 8a4f53a9924f9e347bbf73517539d49e, type: 3}
       volume: 1
     - name: Coins
+      tagID: -1
       mixer: {fileID: 0}
       clips:
       - {fileID: 8300000, guid: 794976885e2ca9040a99e92939e551b6, type: 3}
@@ -39,6 +42,7 @@ MonoBehaviour:
   - name: Music
     soundItems:
     - name: Ballade
+      tagID: 0
       mixer: {fileID: 0}
       clips:
       - {fileID: 8300000, guid: df4aeddb370124548ac3e0085b01e028, type: 3}
@@ -50,4 +54,9 @@ MonoBehaviour:
     soundsSearchName: 
     isMute: 0
   foldOutCategories: 1
+  foldOutTags: 1
   assetName: 
+  soundTags:
+    _tagsData:
+    - name: classical
+      ID: 0
