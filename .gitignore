@@ -1,10 +1,11 @@
-/AudioController/[Ll]ibrary/
-/AudioController/[Tt]emp/
-/AudioController/[Oo]bj/
-/AudioController/[Bb]uild/
-/AudioController/[Bb]uilds/
-/AudioController/Assets/AssetStoreTools*
-/AudioController/Assets/Content*
+*[Ll]ibrary/
+*[Tt]emp/
+*[Oo]bj/
+*[Bb]uild/
+*[Bb]uilds/
+*Assets/AssetStoreTools*
+*Assets/Content*
+*.idea/
 GitHub*
 
 # Visual Studio 2015 cache directory
