@@ -25,6 +25,7 @@ namespace OSSC
         private float _fadeInTime;
         private float _fadeOutTime;
         private float _volume;
+        private float _pitch;
         private bool _isDespawnOnFinishedPlaying = true;
         #endregion
 
@@ -50,7 +51,7 @@ namespace OSSC
             get { return _id; }
         }
 
-        public void Setup(string id, AudioClip clip, float volume, float fadeInTime = 0f, float fadeOutTime = 0f, AudioMixerGroup mixer = null)
+        public void Setup(string id, AudioClip clip, float volume, float fadeInTime = 0f, float fadeOutTime = 0f, AudioMixerGroup mixer = null, float pitch = 1f)
         {
             _id = id;
             _clip = clip;
@@ -62,6 +63,7 @@ namespace OSSC
             _source.time = 0f;
             _source.outputAudioMixerGroup = mixer;
             _volume = volume;
+            _pitch = pitch;
             _fadeInTime = fadeInTime;
             _fadeOutTime = fadeOutTime;
         }
@@ -72,6 +74,7 @@ namespace OSSC
                 _source = GetComponent<AudioSource>();
             _source.clip = _clip;
             gameObject.SetActive(true);
+            _source.pitch = _pitch;
             StartCoroutine(FadeRoutine(_fadeInTime, _volume));
             _source.Play();
             _isFree = false;
@@ -139,6 +142,7 @@ namespace OSSC
             _isFree = true;
             _volume = 0f;
             _source.time = 0f;
+            _source.pitch = 1f;
 
             if (isDespawnOnFinishedPlaying)
                 _pool.Despawn(gameObject);

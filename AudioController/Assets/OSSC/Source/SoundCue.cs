@@ -191,7 +191,7 @@ namespace OSSC
             }
             else
             {
-                AudioObject.Setup(_data.sounds[_currentItem].name, GetRandomClip( _data.sounds[_currentItem].clips ), realVolume, mixer:_data.sounds[_currentItem].mixer);
+                AudioObject.Setup(_data.sounds[_currentItem].name, GetRandomClip( _data.sounds[_currentItem].clips ), realVolume, mixer: _data.sounds[_currentItem].mixer);
             }
             AudioObject.Play();
         }
