@@ -184,14 +184,39 @@ namespace OSSC
 
         private void PlayCurrentItem()
         {
-            float realVolume = _data.sounds[_currentItem].volume * _data.categoryVolumes[_currentItem];
-            if (_currentItem == _data.sounds.Length - 1)
+            float realVolume;
+            if (_data.sounds[_currentItem].isRandomVolume == false)
             {
-                AudioObject.Setup(_data.sounds[_currentItem].name, GetRandomClip( _data.sounds[_currentItem].clips ), realVolume, _data.fadeInTime, _data.fadeOutTime, _data.sounds[_currentItem].mixer);
+                realVolume = _data.sounds[_currentItem].volume * _data.categoryVolumes[_currentItem];
             }
             else
             {
-                AudioObject.Setup(_data.sounds[_currentItem].name, GetRandomClip( _data.sounds[_currentItem].clips ), realVolume, mixer: _data.sounds[_currentItem].mixer);
+                realVolume = _data.sounds[_currentItem].volumeRange.GetRandomRange();
+            }
+
+            float realPitch = 1f;
+            if (_data.sounds[_currentItem].isRandomPitch)
+                realPitch = _data.sounds[_currentItem].pitchRange.GetRandomRange();
+            
+            if (_currentItem == _data.sounds.Length - 1)
+            {
+                AudioObject.Setup(
+                    _data.sounds[_currentItem].name,
+                    GetRandomClip( _data.sounds[_currentItem].clips ),
+                    realVolume,
+                    _data.fadeInTime,
+                    _data.fadeOutTime,
+                    _data.sounds[_currentItem].mixer,
+                    realPitch);
+            }
+            else
+            {
+                AudioObject.Setup(
+                    _data.sounds[_currentItem].name,
+                    GetRandomClip( _data.sounds[_currentItem].clips ),
+                    realVolume,
+                    mixer: _data.sounds[_currentItem].mixer,
+                    pitch: realPitch);
             }
             AudioObject.Play();
         }
