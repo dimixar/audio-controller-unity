@@ -16,6 +16,8 @@ namespace OSSC.Editor
     public class SoundControllerEditor : UnityEditor.Editor
     {
         private const int NAME_ABV_LEN = 50;
+        private const float PITCH_RANGE_MAX = 3f;
+        private const float PITCH_RANGE_MIN = -3f;
         private SoundController _ac;
         private string categoryNameSearch = "";
         private string _tagName = "";
@@ -218,7 +220,26 @@ namespace OSSC.Editor
             {
                 item.clips[i] = (AudioClip)EditorGUILayout.ObjectField(item.clips[i], typeof(AudioClip), false);
             }
-            item.volume = EditorGUILayout.Slider("Volume", item.volume, 0f, 1f);
+            
+            item.isRandomVolume =
+                EditorGUILayout.ToggleLeft("Use Random Volume", item.isRandomVolume, EditorStyles.boldLabel);
+            if (!item.isRandomVolume)
+                item.volume = EditorGUILayout.Slider("Volume", item.volume, 0f, 1f);
+            else
+            {
+                EditorGUILayout.LabelField("Min Volume:", item.volumeRange.min.ToString(), EditorStyles.largeLabel);
+                EditorGUILayout.LabelField("Max Volume:", item.volumeRange.max.ToString(), EditorStyles.largeLabel);
+                EditorGUILayout.MinMaxSlider("Volume Range", ref item.volumeRange.min, ref item.volumeRange.max, 0f, 1f);
+            }
+
+            item.isRandomPitch =
+                EditorGUILayout.ToggleLeft("Use Random Pitch", item.isRandomPitch, EditorStyles.boldLabel);
+            if (item.isRandomPitch)
+            {
+                EditorGUILayout.LabelField("Min Pitch:", item.pitchRange.min.ToString(), EditorStyles.largeLabel);
+                EditorGUILayout.LabelField("Max Pitch:", item.pitchRange.max.ToString(), EditorStyles.largeLabel);
+                EditorGUILayout.MinMaxSlider("Pitch Range", ref item.pitchRange.min, ref item.pitchRange.max, PITCH_RANGE_MIN, PITCH_RANGE_MAX);
+            }
             string nameAbv = "";
             if (string.IsNullOrEmpty(item.name) == false)
                 nameAbv = item.name.Length > NAME_ABV_LEN ? item.name.Substring(0, NAME_ABV_LEN) : item.name;

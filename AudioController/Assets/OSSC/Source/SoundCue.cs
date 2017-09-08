@@ -184,14 +184,36 @@ namespace OSSC
 
         private void PlayCurrentItem()
         {
-            float realVolume = _data.sounds[_currentItem].volume * _data.categoryVolumes[_currentItem];
+            SoundItem item = _data.sounds[_currentItem];
+            
+            float itemVolume = item.isRandomVolume
+                ? item.volumeRange.GetRandomRange()
+                : item.volume;
+            float realVolume = itemVolume * _data.categoryVolumes[_currentItem];
+
+            float realPitch = item.isRandomPitch
+                ? item.pitchRange.GetRandomRange()
+                : 1f;
+            
             if (_currentItem == _data.sounds.Length - 1)
             {
-                AudioObject.Setup(_data.sounds[_currentItem].name, GetRandomClip( _data.sounds[_currentItem].clips ), realVolume, _data.fadeInTime, _data.fadeOutTime, _data.sounds[_currentItem].mixer);
+                AudioObject.Setup(
+                    item.name,
+                    GetRandomClip( item.clips ),
+                    realVolume,
+                    _data.fadeInTime,
+                    _data.fadeOutTime,
+                    item.mixer,
+                    realPitch);
             }
             else
             {
-                AudioObject.Setup(_data.sounds[_currentItem].name, GetRandomClip( _data.sounds[_currentItem].clips ), realVolume, mixer:_data.sounds[_currentItem].mixer);
+                AudioObject.Setup(
+                    item.name,
+                    GetRandomClip( item.clips ),
+                    realVolume,
+                    mixer: item.mixer,
+                    pitch: realPitch);
             }
             AudioObject.Play();
         }

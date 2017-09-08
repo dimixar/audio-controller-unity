@@ -9,8 +9,24 @@ namespace OSSC.Model
         public int tagID = -1;
         public UnityEngine.Audio.AudioMixerGroup mixer;
         public AudioClip[] clips;
+        public bool isRandomPitch;
+        public CustomRange pitchRange;
+        public bool isRandomVolume;
+        public CustomRange volumeRange;
 
         [RangeAttribute(0f, 1f)]
         public float volume = 1f;
+    }
+
+    [System.Serializable]
+    public class CustomRange
+    {
+        public float min = 1f;
+        public float max = 1f;
+
+        public float GetRandomRange()
+        {
+            return Random.Range(min, max);
+        }
     }
 }
