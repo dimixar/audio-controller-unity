@@ -66,6 +66,7 @@ namespace OSSC
         public void Play(SoundCueData data)
         {
             _data = data;
+            AudioObject.isDespawnOnFinishedPlaying = !data.isLooped;
             AudioObject.OnFinishedPlaying = OnFinishedPlaying_handler;
             // audioObject.isDespawnOnFinishedPlaying = false;
             if (TryPlayNext() == false)

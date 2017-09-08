@@ -52,8 +52,8 @@ namespace OSSC
         /// Creates a SoundCue and plays it.
         /// </summary>
         /// <param name="settings">A struct which contains all data for SoundController to work</param>
-        /// <returns>A soundCue proxy which can be subscribed to it's events.</returns>
-        public SoundCueProxy Play(PlaySoundSettings settings)
+        /// <returns>A soundCue interface which can be subscribed to it's events.</returns>
+        public ISoundCue Play(PlaySoundSettings settings)
         {
             if (settings.soundCueProxy != null)
             {
@@ -188,7 +188,7 @@ namespace OSSC
         #region Private methods
         private SoundCueProxy PlaySoundCue(PlaySoundSettings settings)
         {
-            SoundCueProxy cue = settings.soundCueProxy;
+            SoundCueProxy cue = settings.soundCueProxy as SoundCueProxy;
             Transform parent = settings.parent;
             float fadeInTime = settings.fadeInTime;
             float fadeOutTime = settings.fadeOutTime;
@@ -290,7 +290,7 @@ namespace OSSC
         public float fadeOutTime;
         public string categoryName;
         public bool isLooped;
-        public SoundCueProxy soundCueProxy;
+        public ISoundCue soundCueProxy;
         public string tagName;
 
         public void Init()

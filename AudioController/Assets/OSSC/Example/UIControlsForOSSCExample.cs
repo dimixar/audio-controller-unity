@@ -7,13 +7,13 @@ public class UIControlsForOSSCExample : MonoBehaviour
 {
     public SoundController soundController;
 
-    SoundCueProxy coins;
-    SoundCueProxy whosh;
-    SoundCueProxy crackingIce;
-    SoundCueProxy sfxCue;
-    SoundCueProxy sfxCueLoop;
-    SoundCueProxy music;
-    SoundCueProxy musicWithTag;
+    ISoundCue coins;
+    ISoundCue whosh;
+    ISoundCue crackingIce;
+    ISoundCue sfxCue;
+    ISoundCue sfxCueLoop;
+    ISoundCue music;
+    ISoundCue musicWithTag;
 
     public void PlayCoins()
     {
