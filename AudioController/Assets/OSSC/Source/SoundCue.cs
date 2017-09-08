@@ -184,38 +184,35 @@ namespace OSSC
 
         private void PlayCurrentItem()
         {
-            float realVolume;
-            if (_data.sounds[_currentItem].isRandomVolume == false)
-            {
-                realVolume = _data.sounds[_currentItem].volume * _data.categoryVolumes[_currentItem];
-            }
-            else
-            {
-                realVolume = _data.sounds[_currentItem].volumeRange.GetRandomRange();
-            }
+            SoundItem item = _data.sounds[_currentItem];
+            
+            float itemVolume = item.isRandomVolume
+                ? item.volumeRange.GetRandomRange()
+                : item.volume;
+            float realVolume = itemVolume * _data.categoryVolumes[_currentItem];
 
-            float realPitch = 1f;
-            if (_data.sounds[_currentItem].isRandomPitch)
-                realPitch = _data.sounds[_currentItem].pitchRange.GetRandomRange();
+            float realPitch = item.isRandomPitch
+                ? item.pitchRange.GetRandomRange()
+                : 1f;
             
             if (_currentItem == _data.sounds.Length - 1)
             {
                 AudioObject.Setup(
-                    _data.sounds[_currentItem].name,
-                    GetRandomClip( _data.sounds[_currentItem].clips ),
+                    item.name,
+                    GetRandomClip( item.clips ),
                     realVolume,
                     _data.fadeInTime,
                     _data.fadeOutTime,
-                    _data.sounds[_currentItem].mixer,
+                    item.mixer,
                     realPitch);
             }
             else
             {
                 AudioObject.Setup(
-                    _data.sounds[_currentItem].name,
-                    GetRandomClip( _data.sounds[_currentItem].clips ),
+                    item.name,
+                    GetRandomClip( item.clips ),
                     realVolume,
-                    mixer: _data.sounds[_currentItem].mixer,
+                    mixer: item.mixer,
                     pitch: realPitch);
             }
             AudioObject.Play();
