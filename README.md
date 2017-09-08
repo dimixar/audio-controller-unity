@@ -15,6 +15,8 @@ Main Features:
 - All data is saved on a scriptable object asset
 - You can create multiple data assets and swap them easily
 - Create whole cues of sounds with ease (very useful when you have dialog Voice Over)
+- Add Random Pitch to sound items
+- Add Random Volume to sound items
 - It's not a singleton!!!
 
 How to add it to your project and scene:
