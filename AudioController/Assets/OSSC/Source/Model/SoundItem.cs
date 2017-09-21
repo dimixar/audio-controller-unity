@@ -10,9 +10,9 @@ namespace OSSC.Model
         public UnityEngine.Audio.AudioMixerGroup mixer;
         public AudioClip[] clips;
         public bool isRandomPitch;
-        public CustomRange pitchRange;
+        public CustomRange pitchRange = new CustomRange();
         public bool isRandomVolume;
-        public CustomRange volumeRange;
+        public CustomRange volumeRange = new CustomRange();
 
         [RangeAttribute(0f, 1f)]
         public float volume = 1f;
