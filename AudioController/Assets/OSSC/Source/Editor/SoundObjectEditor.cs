@@ -6,12 +6,24 @@ using OSSC;
 
 namespace OSSC.Editor
 {
+    /// <summary>
+    /// Draw the custom editor inspector for SoundObject
+    /// </summary>
     [CustomEditor(typeof(SoundObject))]
     public class SoundObjectEditor : UnityEditor.Editor
     {
+        /// <summary>
+        /// SoundObject reference
+        /// </summary>
         private SoundObject _ao;
+        /// <summary>
+        /// Checks whether to show controls or not
+        /// </summary>
         private bool _showControls = false;
 
+        /// <summary>
+        /// Draws the inspector's GUI
+        /// </summary>
         public override void OnInspectorGUI()
         {
             _ao = target as SoundObject;
@@ -25,6 +37,9 @@ namespace OSSC.Editor
             ShowControls();
         }
 
+        /// <summary>
+        /// Draw the editor Controls of the SoundObject.
+        /// </summary>
         private void ShowControls()
         {
             if (_ao.source.isPlaying)

@@ -2,13 +2,24 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Creates a pool of different prefabs when someone requests a GameObject.
+/// </summary>
 public class ObjectPool : MonoBehaviour
 {
     #region Public fields
+    /// <summary>
+    /// The list of Prefab based pools
+    /// </summary>
     public List<PrefabBasedPool> pools;
     #endregion
     #region Public methods and properties
 
+    /// <summary>
+    /// Gets a Free GameObject.
+    /// </summary>
+    /// <param name="prefab">The kind of GameObject to return</param>
+    /// <returns>Returns the requested GameObject instance</returns>
     public GameObject GetFreeObject(GameObject prefab = null)
     {
         if (prefab == null)

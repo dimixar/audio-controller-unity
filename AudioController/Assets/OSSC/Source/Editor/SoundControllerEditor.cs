@@ -9,19 +9,40 @@ using UnityEngine.EventSystems;
 
 namespace OSSC.Editor
 {
-    //TODO: Add some basic cueManager info.
-    //*** Ex: playing sound cues, free soundCues,
-    //*** Ex: current data contained into some soundCues.
+    /// <summary>
+    /// Draws the Custom Editor for SoundController
+    /// </summary>
     [CustomEditor(typeof(SoundController))]
     public class SoundControllerEditor : UnityEditor.Editor
     {
+        /// <summary>
+        /// Max search string length
+        /// </summary>
         private const int NAME_ABV_LEN = 50;
+        /// <summary>
+        /// Max pitch limit range
+        /// </summary>
         private const float PITCH_RANGE_MAX = 3f;
+        /// <summary>
+        /// Min pitch limit range
+        /// </summary>
         private const float PITCH_RANGE_MIN = -3f;
+        /// <summary>
+        /// Reference to SoundController
+        /// </summary>
         private SoundController _ac;
+        /// <summary>
+        /// Local category search string storage.
+        /// </summary>
         private string categoryNameSearch = "";
+        /// <summary>
+        /// Local tag name string storage
+        /// </summary>
         private string _tagName = "";
 
+        /// <summary>
+        /// Draws the Inspector GUI
+        /// </summary>
         public override void OnInspectorGUI()
         {
             base.OnInspectorGUI();
@@ -41,6 +62,9 @@ namespace OSSC.Editor
                 EditorUtility.SetDirty(_ac._database);
         }
 
+        /// <summary>
+        /// Draw the main window of the SoundController.
+        /// </summary>
         private void DrawMain()
         {
             if (_ac._database == null)
@@ -66,6 +90,10 @@ namespace OSSC.Editor
             DrawCategories(_ac._database);
         }
 
+        /// <summary>
+        /// Draws the category
+        /// </summary>
+        /// <param name="db">Uses SoundControllerData to fetch Category data.</param>
         private void DrawCategories(Model.SoundControllerData db)
         {
 
@@ -88,6 +116,11 @@ namespace OSSC.Editor
             }
         }
 
+        /// <summary>
+        /// Draws a CategoryItem.
+        /// </summary>
+        /// <param name="item">CategoryItem data</param>
+        /// <param name="index">CategoryItem's index</param>
         private void DrawCategory(Model.CategoryItem item, int index)
         {
             EditorGUILayout.BeginVertical(EditorStyles.helpBox);
@@ -127,6 +160,10 @@ namespace OSSC.Editor
             EditorGUILayout.EndVertical();
         }
 
+        /// <summary>
+        /// Deletes a CategoryItem by index.
+        /// </summary>
+        /// <param name="index">CategoryItem's index</param>
         private void DeleteCategory(int index)
         {
             var categories = new Model.CategoryItem[_ac._database.items.Length - 1];
@@ -142,6 +179,13 @@ namespace OSSC.Editor
             _ac._database.items = categories;
         }
 
+        /// <summary>
+        /// Draws all SoundItems from a CategoryItem.
+        /// </summary>
+        /// <param name="item">data that has SoundItem array</param>
+        /// <param name="foldOut">Check if should fold out the window</param>
+        /// <param name="searchName">Filter SoundItems by name</param>
+        /// <returns></returns>
         private bool DrawSoundItems(Model.CategoryItem item, bool foldOut, string searchName)
         {
             Model.SoundItem[] items = item.soundItems;
@@ -178,6 +222,12 @@ namespace OSSC.Editor
             return foldOut;
         }
 
+        /// <summary>
+        /// Draw a SoundItem
+        /// </summary>
+        /// <param name="item">SoundItem data</param>
+        /// <param name="index">SoundItem's index</param>
+        /// <param name="items">The array of SoundItems</param>
         private void DrawSoundItem(Model.SoundItem item, int index, Model.SoundItem[] items)
         {
             EditorGUILayout.BeginVertical(EditorStyles.helpBox);
@@ -250,6 +300,11 @@ namespace OSSC.Editor
             EditorGUILayout.EndVertical();
         }
 
+        /// <summary>
+        /// Delete SoundItem by index.
+        /// </summary>
+        /// <param name="index">SoundItem's index</param>
+        /// <param name="items">Array which will have the SoundItem deleted from.</param>
         private void DeleteSoundItem(int index, Model.SoundItem[] items)
         {
             var category = System.Array.Find(_ac._database.items, (x) => {
@@ -268,6 +323,9 @@ namespace OSSC.Editor
             category.soundItems = soundItems;
         }
 
+        /// <summary>
+        /// Draw SoundTags.
+        /// </summary>
         private void DrawSoundTags()
         {
             if (_ac._database.soundTags == null)
@@ -293,6 +351,11 @@ namespace OSSC.Editor
             EditorGUILayout.EndVertical();
         }
 
+        /// <summary>
+        /// Draw a SoundTag
+        /// </summary>
+        /// <param name="data">SoundTag's data</param>
+        /// <param name="tags">Reference to SoundTags</param>
         private void DrawSoundTag(TagData data, SoundTags tags)
         {
             EditorGUILayout.BeginHorizontal();
@@ -304,6 +367,9 @@ namespace OSSC.Editor
             EditorGUILayout.EndHorizontal();
         }
 
+        /// <summary>
+        /// Draw button to add new sound tags.
+        /// </summary>
         private void DrawAddNewTag()
         {
             EditorGUILayout.BeginHorizontal(EditorStyles.helpBox);

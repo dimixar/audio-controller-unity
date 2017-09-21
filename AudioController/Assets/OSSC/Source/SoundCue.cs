@@ -12,12 +12,12 @@ namespace OSSC
     public class SoundCue : ISoundCue
     {
         /// <summary>
-        /// Called on every sound item that has ended playing;
-        /// /// </summary>
+        /// Check ISoundCue
+        /// </summary>
         public Action<string> OnPlayEnded { get; set; }
 
         /// <summary>
-        /// Called when the whole cue finished playing;
+        /// Check ISoundCue
         /// </summary>
         public Action<SoundCue> OnPlayCueEnded { get; set; }
 
@@ -26,10 +26,19 @@ namespace OSSC
         /// </summary>
         public Action<SoundCue, SoundCueProxy> OnPlayKilled { get; set; }
 
+        /// <summary>
+        /// Check ISoundCue
+        /// </summary>
         public SoundObject AudioObject { get; set; }
 
+        /// <summary>
+        /// Check ISoundCue
+        /// </summary>
         public SoundCueData Data { get { return _data; } }
 
+        /// <summary>
+        /// Check ISoundCue
+        /// </summary>
         public bool IsPlaying
         {
             get;
@@ -46,22 +55,38 @@ namespace OSSC
             private set;
         }
 
+        /// <summary>
+        /// Default Constructor
+        /// </summary>
         public SoundCue()
         {
         }
 
+        /// <summary>
+        /// Custom Constructor
+        /// </summary>
+        /// <param name="id">Sets the ID of the SoundCue.</param>
         public SoundCue(int id)
         {
             ID = id;
         }
 
+        /// <summary>
+        /// Current index of the SoundItem playing.
+        /// </summary>
         private int _currentItem = 0;
+        /// <summary>
+        /// SoundCue data
+        /// </summary>
         private SoundCueData _data;
+        /// <summary>
+        /// The proxy that the user uses to control the SoundCue.
+        /// </summary>
         private SoundCueProxy _currentProxy;
 
         /// <summary>
         /// Will start playing the cue.
-        /// NOTE: It is called automatically if gotten from AudioController.
+        /// NOTE: It is called from SoundCueProxy that is created by the SoundController.
         /// </summary>
         public void Play(SoundCueData data)
         {
@@ -76,6 +101,11 @@ namespace OSSC
             IsPlaying = true;
         }
 
+        /// <summary>
+        /// Plays the SoundCue.
+        /// </summary>
+        /// <param name="data">SoundCue's data</param>
+        /// <param name="proxy">Proxy created by SoundController that called this method.</param>
         public void Play(SoundCueData data, SoundCueProxy proxy)
         {
             Play(data);
@@ -100,6 +130,10 @@ namespace OSSC
             AudioObject.Resume();
         }
 
+        /// <summary>
+        /// Stops the SoundCue.
+        /// </summary>
+        /// <param name="shouldCallOnFinishedCue">Checks whether to call OnEnd events, or not.</param>
         public void Stop(bool shouldCallOnFinishedCue = true)
         {
             if (IsPlaying == false)
@@ -126,6 +160,10 @@ namespace OSSC
             }
         }
 
+        /// <summary>
+        /// Internal event handler.
+        /// </summary>
+        /// <param name="obj"></param>
         private void OnFinishedPlaying_handler(SoundObject obj)
         {
             string itemName = _data.sounds[_currentItem - 1].name;
@@ -157,6 +195,10 @@ namespace OSSC
             }
         }
 
+        /// <summary>
+        /// Tries to play the next SoundItem in SoundCue.
+        /// </summary>
+        /// <returns>True - can play, False - Cannot</returns>
         private bool TryPlayNext()
         {
             bool isPlaying = false;
@@ -183,6 +225,9 @@ namespace OSSC
             return isPlaying;
         }
 
+        /// <summary>
+        /// Plays the Current SoundItem.
+        /// </summary>
         private void PlayCurrentItem()
         {
             SoundItem item = _data.sounds[_currentItem];
@@ -219,6 +264,11 @@ namespace OSSC
             AudioObject.Play();
         }
 
+        /// <summary>
+        /// Gets a random AudioClip from and array of AudioClips.
+        /// </summary>
+        /// <param name="clips">Array of SoundClips</param>
+        /// <returns>An AudioClip</returns>
         private AudioClip GetRandomClip(AudioClip[] clips)
         {
             int index = UnityEngine.Random.Range(0, clips.Length);
@@ -231,15 +281,42 @@ namespace OSSC
     /// </summary>
     public struct SoundCueData
     {
+        /// <summary>
+        /// sound items that played by the SoundCue.
+        /// </summary>
         public SoundItem[] sounds;
+        /// <summary>
+        /// category items that correspond with each of SoundItem in sounds.
+        /// </summary>
         public CategoryItem[] categoriesForSounds;
+        /// <summary>
+        /// Category sound volumes that correspond with Sound items.
+        /// </summary>
         public float[] categoryVolumes;
+        /// <summary>
+        /// Prefab with SoundObject to play Sound items.
+        /// </summary>
         public GameObject audioPrefab;
+        /// <summary>
+        /// Fade In time.
+        /// </summary>
         public float fadeInTime;
+        /// <summary>
+        /// Fade Out time.
+        /// </summary>
         public float fadeOutTime;
+        /// <summary>
+        /// Should SoundCue Fade In?
+        /// </summary>
         public bool isFadeIn;
+        /// <summary>
+        /// Should SoundCue Fade Out?
+        /// </summary>
         public bool isFadeOut;
 
+        /// <summary>
+        /// Should SoundCue be looped?
+        /// </summary>
         public bool isLooped;
     }
 }

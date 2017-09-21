@@ -5,25 +5,47 @@ using OSSC.Model;
 
 namespace OSSC
 {
+    /// <summary>
+    /// The main class that is used for Playing and controlling all sounds.
+    /// </summary>
     [RequireComponent(typeof(ObjectPool))]
     public class SoundController : MonoBehaviour
     {
         #region Serialized Data
+        /// <summary>
+        /// Default prefab with SoundObject and AudioSource.
+        /// It is used by the Soundcontroller to play SoundCues.
+        /// </summary>
         public GameObject _defaultPrefab;
+        /// <summary>
+        /// Saves all the data that the SoundController uses.
+        /// </summary>
         public SoundControllerData _database;
-        private int _initialCueManagerSize = 10;
 
         #endregion
 
         #region Private fields
 
+        /// <summary>
+        /// Gives instances of GameObjects thrown in it.
+        /// </summary>
         private ObjectPool _pool;
+        /// <summary>
+        /// Manages all created SoundCues.
+        /// </summary>
         private CueManager _cueManager;
+        /// <summary>
+        /// Initial pool size of SoundCues for CueManager.
+        /// </summary>
+        private int _initialCueManagerSize = 10;
 
         #endregion
 
         #region Public methods and properties
 
+        /// <summary>
+        /// Set the default Prefab with SoundObject and AudioSource in it.
+        /// </summary>
         public GameObject defaultPrefab
         {
             set
@@ -32,11 +54,20 @@ namespace OSSC
             }
         }
 
+        /// <summary>
+        /// Stop all Playing Sound Cues.
+        /// </summary>
+        /// <param name="shouldCallOnEndCallback">Control whether to call the OnEnd event, or not.</param>
         public void StopAll(bool shouldCallOnEndCallback = true)
         {
             _cueManager.StopAllCues(shouldCallOnEndCallback);
         }
 
+        /// <summary>
+        /// Set mute a category.
+        /// </summary>
+        /// <param name="categoryName">Name of the cateogory</param>
+        /// <param name="value">True to mute, false to unmute</param>
         public void SetMute(string categoryName, bool value)
         {
             for (int i = 0; i < _database.items.Length; i++)
@@ -186,6 +217,12 @@ namespace OSSC
         #endregion
 
         #region Private methods
+        /// <summary>
+        /// This method is called only when PlaySoundSettings has a SoundCue reference in it.
+        /// Same as Play(), but much faster.
+        /// </summary>
+        /// <param name="settings">PlaySoundSettings instance with SoundCue reference in it.</param>
+        /// <returns>Same SoundCue from PlaySoundSettings</returns>
         private SoundCueProxy PlaySoundCue(PlaySoundSettings settings)
         {
             SoundCueProxy cue = settings.soundCueProxy as SoundCueProxy;
@@ -208,6 +245,7 @@ namespace OSSC
             return cue;
         }
 
+        #region Internal tests
         [ContextMenu("Test play")]
         void Test()
         {
@@ -266,6 +304,8 @@ namespace OSSC
             Debug.Log(proxyCue.ID);
         }
         #endregion
+        
+        #endregion
 
         #region MonoBehaviour methods
 
@@ -283,16 +323,48 @@ namespace OSSC
     /// </summary>
     public struct PlaySoundSettings
     {
+        /// <summary>
+        /// Name of the soundItem to be played
+        /// </summary>
         public string name;
+        /// <summary>
+        /// A list of sound Items to be played consecutively
+        /// </summary>
         public string[] names;
+        /// <summary>
+        /// Attach the Playing sound to a Specific GameObject
+        /// </summary>
         public Transform parent;
+        /// <summary>
+        /// Fade In time of the whole SoundCue
+        /// </summary>
         public float fadeInTime;
+        /// <summary>
+        /// Fade Out time of the whole SoundCue
+        /// </summary>
         public float fadeOutTime;
+        /// <summary>
+        /// Play SoundItems from a specific Category
+        /// </summary>
         public string categoryName;
+        /// <summary>
+        /// Control whether the SoundCue should loop
+        /// </summary>
         public bool isLooped;
+        /// <summary>
+        /// Use the same SoundCue to play again the sounds played in that SoundCue
+        /// This is recommended to do, because searching by names all the Sounds to play is very expensive.
+        /// </summary>
         public ISoundCue soundCueProxy;
+        /// <summary>
+        /// Play soundItems that correspond to the tag
+        /// </summary>
         public string tagName;
 
+        /// <summary>
+        /// Initializes the PlaySoundSettings with predefined values. It is required to be called after the creation
+        /// of the PlaySoundSettings instance.
+        /// </summary>
         public void Init()
         {
             name = string.Empty;
